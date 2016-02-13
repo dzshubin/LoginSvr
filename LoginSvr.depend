@@ -1,0 +1,84 @@
+# depslib dependency file v1.0
+1454295256 source:/home/ezlife/Project/LoginSvr/main.cpp
+	<iostream>
+	<boost/asio/io_service.hpp>
+	<boost/asio/ip/tcp.hpp>
+	<boost/asio/ip/address.hpp>
+	<boost/date_time/posix_time/posix_time.hpp>
+	"ClientHandler.hpp"
+	"Server.hpp"
+
+1454239600 source:/home/ezlife/Project/LoginSvr/CMsg.cpp
+	"CMsg.h"
+	<boost/archive/text_iarchive.hpp>
+	<boost/archive/text_oarchive.hpp>
+	<sstream>
+
+1454166347 /home/ezlife/Project/LoginSvr/CMsg.h
+	<boost/archive/text_oarchive.hpp>
+	<sstream>
+	<string>
+
+1454298469 source:/home/ezlife/Project/LoginSvr/Handler.cpp
+	"Handler.hpp"
+
+1454243179 /home/ezlife/Project/LoginSvr/Handler.hpp
+	<array>
+	<string>
+	<iostream>
+	<boost/archive/text_iarchive.hpp>
+	<boost/asio/ip/tcp.hpp>
+	<boost/asio/read.hpp>
+	<boost/asio/write.hpp>
+	<boost/asio/streambuf.hpp>
+	"CMsg.h"
+
+1454507380 source:/home/ezlife/Project/LoginSvr/ClientHandler.cpp
+	"ClientHandler.hpp"
+	"ClientMsgTypeDefine.hpp"
+	"MsgSvrManager.hpp"
+	"MsgStruct.hpp"
+
+1454504042 /home/ezlife/Project/LoginSvr/ClientHandler.hpp
+	"Handler.hpp"
+	<boost/asio/ip/tcp.hpp>
+
+1454245529 /home/ezlife/Project/LoginSvr/Server.hpp
+	<boost/asio/io_service.hpp>
+	<boost/asio/ip/tcp.hpp>
+
+1454504067 source:/home/ezlife/Project/LoginSvr/CMsgSvr.cpp
+	"CMsgSvr.hpp"
+
+1454503868 /home/ezlife/Project/LoginSvr/CMsgSvr.hpp
+
+1454503246 source:/home/ezlife/Project/LoginSvr/MsgSvrHandler.cpp
+	"MsgSvrHandler.h"
+	"MsgStruct.hpp"
+	"ClientMsgTypeDefine.hpp"
+
+1454503148 /home/ezlife/Project/LoginSvr/MsgSvrHandler.h
+	"Handler.hpp"
+	"MsgSvrManager.hpp"
+
+1454503456 /home/ezlife/Project/LoginSvr/MsgSvrManager.hpp
+	<vector>
+	<tuple>
+	"CMsgSvr.hpp"
+
+1454505680 source:/home/ezlife/Project/LoginSvr/MsgSvrManager.cpp
+	"MsgSvrManager.hpp"
+	<algorithm>
+	<iostream>
+
+1454250461 source:/home/ezlife/Project/LoginSvr/Server.cpp
+	<iostream>
+	<string>
+	"ClientHandler.hpp"
+	"MsgSvrHandler.h"
+	"Server.hpp"
+
+1454505610 /home/ezlife/Project/LoginSvr/MsgStruct.hpp
+
+1454505980 /home/ezlife/Project/LoginSvr/ClientMsgTypeDefine.hpp
+
