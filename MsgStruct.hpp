@@ -2,7 +2,6 @@
 #define MSGSTRUCT_HPP_INCLUDED
 
 
-
 struct Msg_msgsvr_register
 {
     Msg_msgsvr_register () :m_port (0)

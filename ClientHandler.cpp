@@ -35,6 +35,9 @@ void ClientHandler::process_msg(int type_)
 
 void ClientHandler::handle_UserLogin()
 {
+
+    // 账号密码验证
+
     // 获得人数最少的服务器端口
     auto svr_info = MsgSvrManager::get_instance()->get_best_svr();
 
