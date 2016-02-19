@@ -48,5 +48,17 @@ enum class C2L
 };
 
 
+enum class L2D
+{
+    /*
+     *      账号验证
+     * @parm    id      : 用户账号
+     * @parm    passwd  : 登陆密码
+     * @return  result  : 验证结果
+     */
+     Verification                   = 3000,
+	
+};
+
 
 #endif // CLIENTMSGTYPEDEFINE_HPP_INCLUDED

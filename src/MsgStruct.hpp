@@ -1,6 +1,28 @@
 #ifndef MSGSTRUCT_HPP_INCLUDED
 #define MSGSTRUCT_HPP_INCLUDED
 
+#include <string>
+
+
+struct Msg_login
+{
+
+    uint64_t m_nId;
+    std::string m_passwd;
+
+
+    Msg_login (): m_nId(0)
+    {
+
+    }
+
+    template <typename Archive>
+    void serialize(Archive& ar, const unsigned int version)
+    {
+        ar & m_nId;
+        ar & m_passwd;
+    }
+};
 
 struct Msg_msgsvr_register
 {
@@ -51,6 +73,27 @@ struct Msg_update_count
 
     int m_user_count;
 };
+
+struct Msg_validate_result
+{
+    Msg_validate_result (): m_bResult(false)
+    {
+    }
+
+    template <typename Archive>
+    void serialize(Archive& ar, const unsigned int version)
+    {
+    	ar & m_bResult;
+        ar & m_strIp;
+	ar & m_strPort;
+    }
+ 
+
+    bool m_bResult;
+    std::string m_strIp;
+    std::string m_strPort;
+};
+
 
 
 

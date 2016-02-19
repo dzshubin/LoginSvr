@@ -19,4 +19,6 @@ public:
 };
 
 
+void send_to_client(uint64_t, CMsg&);
+
 #endif // CLIENTHANDLER_HPP_INCLUDED

@@ -27,9 +27,10 @@ public:
         m_send_data = os.str();
         std::cout << "now, string: " << m_send_data << std::endl;
     }
+    std::string& get_send_data();
 
+    void set_serialize_string (std::string);
 
-    std::string get_send_data();
 
     int get_data_len();
 

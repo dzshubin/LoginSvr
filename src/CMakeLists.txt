@@ -1,7 +1,7 @@
 
 cmake_minimum_required (VERSION 2.8)
 # Project 
-project (RouterSvr)
+project (LoginSvr)
 
 
 # policy
@@ -32,34 +32,51 @@ set (Boost_head_path    ${Boost_root_path}/include)
 set (Boost_lib_path	${Boost_root_path}/lib)
 
 
-# 设置protobuf路径
-set (Pb_root_path	../pb)
-set (Pb_head_path	${Pb_root_path}/include)
-
-include_directories(${Pb_head_path})
-
 include_directories(${Boost_head_path})
 LINK_DIRECTORIES(${Boost_lib_path})
 
 
+# 设置pb生成的文件路径
+set (Pb_root_path	../pb)
+set (Pb_file_path	${Pb_root_path}/include)
+
+include_directories(${Pb_file_path})
+
+
+# 设置protobuf路径
+set (Pb_head_path 	/usr/include/google/protobuf)
+set (Pb_lib_path	/usr/lib)
+
+include_directories(${Pb_head_path})
+LINK_DIRECTORIES(${Pb_lib_path})
+
+
+
+# set used boost
 set (Boost_system_lib 		    libboost_system.a)
 set (Boost_serialization_lib 	libboost_serialization.a)
 set (Boost_signals_lib 		    libboost_signals.a)
 
 
-set (Used_libs ${Boost_system_lib} ${Boost_serialization_lib} ${Boost_signals_lib})
+set (Boost_used_libs ${Boost_system_lib} ${Boost_serialization_lib} ${Boost_signals_lib})
+
+
+# set used protobuf
+set (Pb_lib	libprotobuf.a)
+
+set (Pb_used_libs ${Pb_lib})
 
 
 # 当前目前下的所有源文件
 aux_source_directory (. DIR_SRCS)
-aux_source_directory (${Pb_head_path} PB_SRCS)
+aux_source_directory (${Pb_file_path} PB_SRCS)
 
 ADD_EXECUTABLE(${PROJECT_NAME} ${DIR_SRCS} ${PB_SRCS})
 
 
 #
-TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${Used_libs})
-TARGET_LINK_LIBRARIES(${PROJECT_NAME} /usr/lib/libprotobuf.a)
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${Boost_used_libs} ${Pb_used_libs} )
+#TARGET_LINK_LIBRARIES(${PROJECT_NAME} /usr/lib/libprotobuf.a)
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} -lpthread)
 
 

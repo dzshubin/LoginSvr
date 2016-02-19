@@ -1,0 +1,11 @@
+
+
+package IM;
+
+message Validate
+{
+    required bool result = 1;
+    optional string ip = 2;
+    optional string port = 3;
+
+};

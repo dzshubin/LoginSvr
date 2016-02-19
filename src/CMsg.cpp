@@ -44,9 +44,12 @@ int CMsg::get_data_len()
     return m_send_data.size();
 }
 
+void CMsg::set_serialize_string (std::string data)
+{
+    m_send_data = data;
+}
 
-
-std::string CMsg::get_send_data()
+std::string& CMsg::get_send_data()
 {
     return m_send_data;
 }
