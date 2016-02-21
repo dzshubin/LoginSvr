@@ -4,6 +4,7 @@
 #include "ClientMsgTypeDefine.hpp"
 #include "MsgSvrManager.hpp"
 #include "MsgStruct.hpp"
+#include "ConnManager.hpp"
 #include "DBSvrHandler.hpp"
 
 
