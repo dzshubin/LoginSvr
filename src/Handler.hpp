@@ -12,14 +12,15 @@
 
 #include "CMsg.h"
 
+using namespace std;
 using namespace boost::asio;
 
-class Handler: public std::enable_shared_from_this<Handler>
+class Handler: public enable_shared_from_this<Handler>
 {
 
 
 public:
-    Handler (boost::asio::ip::tcp::socket);
+    Handler (ip::tcp::socket);
     virtual ~Handler();
 
 public:
@@ -39,9 +40,6 @@ public:
     void encode_msg(CMsg&);
 
     void send_msg(CMsg&);
-    /*
-     *  给指定的socket发送msg
-     */
     void send_msg(ip::tcp::socket&, CMsg&);
 
 
@@ -50,30 +48,16 @@ public:
     void deserialization(T& t, boost::asio::streambuf& buf)
     {
 
-        std::ostringstream os;
+        ostringstream os;
         os << &buf;
 
-        std::string ser_data (os.str());
-        std::istringstream is(ser_data);
+        string ser_data (os.str());
+        istringstream is(ser_data);
         boost::archive::text_iarchive ia(is);
         ia & t;
 
-        std::cout << "buf size: " <<buf.size() <<std::endl;
+        cout << "buf size: " <<buf.size() <<endl;
     }
-
-    template <class T>
-    void parse_pb_message(T& t, boost::asio::streambuf& buf)
-    {
-
-        std::ostringstream os;
-        os << &buf;
-
-        std::string send_data (os.str());
-        t.ParseFromString(send_data);
-
-        std::cout << "buf size: " <<buf.size() <<std::endl;
-    }
-
 private:
 
     int get_len();  // 前4个字节为数据长度
@@ -91,8 +75,8 @@ protected:
 
     boost::asio::streambuf m_rBuf;
     boost::asio::streambuf m_wBuf;
-    std::array<char, 8> head_info;
-    std::string send_str;
+    array<char, 8> head_info;
+    string send_str;
 };
 
 
