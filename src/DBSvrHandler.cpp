@@ -5,6 +5,7 @@
 #include "MsgStruct.hpp"
 #include "ClientMsgTypeDefine.hpp"
 #include "ConnManager.hpp"
+#include "MsgSvrManager.hpp"
 
 #include <string>
 
@@ -60,9 +61,32 @@ void DBSvrHandler::handle_verification ()
 
     IM::Validate validate;
     validate.set_result(validate_result.m_bResult);
-    validate.set_ip(validate_result.m_strIp);
-    validate.set_port(validate_result.m_strPort);
 
+    // 如果验证通过
+    if (validate_result.m_bResult)
+    {
+        // 获得人数最少的服务器端口
+        auto svr_info = MsgSvrManager::get_instance()->get_best_svr();
+
+
+        if (std::get<1>(svr_info))
+        {
+            int nAllocatePort = std::get<0>(svr_info);
+            std::cout << "allocate msgsvr port: " <<  nAllocatePort << std::endl;
+
+            validate.set_port(to_string(nAllocatePort));
+            validate.set_ip("127.0.0.1");
+        }
+        else
+        {
+            std::cout << "Msgsvr端口分配失败 " << std::endl;
+            return ;
+        }
+    }
+    else
+    {
+
+    }
 
     string validate_info;
     validate.SerializeToString(&validate_info);
@@ -81,29 +105,6 @@ void DBSvrHandler::handle_verification ()
     {
         cout << "invalid conn!" << endl;
     }
-
-
-//    // 获得人数最少的服务器端口
-//    auto svr_info = MsgSvrManager::get_instance()->get_best_svr();
-//
-//
-//    if (std::get<1>(svr_info))
-//    {
-//        int nAllocatePort = std::get<0>(svr_info);
-//        std::cout << "allocate msgsvr port: " <<  nAllocatePort << std::endl;
-//        Msg_msgsvr_allocate allocate;
-//        allocate.m_port = nAllocatePort;
-//
-//        CMsg port_allocate;
-//        port_allocate.set_msg_type((int)C2L::UserLogin);
-//        port_allocate.set_send_data(allocate);
-//
-//        send_msg(port_allocate);
-//    }
-//    else
-//    {
-//        std::cout << "error." << std::endl;
-//    }
 }
 
 
