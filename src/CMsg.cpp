@@ -39,14 +39,14 @@ int CMsg::get_msg_type()
     return m_type;
 }
 
-int CMsg::get_data_len()
+int CMsg::send_data_len()
 {
     return m_send_data.size();
 }
 
 void CMsg::set_serialize_string (std::string data)
 {
-    m_send_data = data;
+    m_send_data = std::move(data);
 }
 
 std::string& CMsg::get_send_data()

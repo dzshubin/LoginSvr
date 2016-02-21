@@ -28,11 +28,10 @@ public:
         std::cout << "now, string: " << m_send_data << std::endl;
     }
     std::string& get_send_data();
+    int send_data_len();
+
 
     void set_serialize_string (std::string);
-
-
-    int get_data_len();
 
 private:
     int m_type;
