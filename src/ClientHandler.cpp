@@ -60,28 +60,6 @@ void ClientHandler::handle_UserLogin()
     send_to_db (packet);
 
     google::protobuf::ShutdownProtobufLibrary();
-
-//    // 获得人数最少的服务器端口
-//    auto svr_info = MsgSvrManager::get_instance()->get_best_svr();
-//
-//
-//    if (std::get<1>(svr_info))
-//    {
-//        int nAllocatePort = std::get<0>(svr_info);
-//        std::cout << "allocate msgsvr port: " <<  nAllocatePort << std::endl;
-//        Msg_msgsvr_allocate allocate;
-//        allocate.m_port = nAllocatePort;
-//
-//        CMsg port_allocate;
-//        port_allocate.set_msg_type((int)C2L::UserLogin);
-//        port_allocate.set_send_data(allocate);
-//
-//        send_msg(port_allocate);
-//    }
-//    else
-//    {
-//        std::cout << "error." << std::endl;
-//    }
 }
 
 
