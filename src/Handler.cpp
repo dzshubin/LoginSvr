@@ -127,7 +127,7 @@ void Handler::encode_msg(CMsg& msg)
     send_str.clear();
 
     char len[5];
-    sprintf(len, "%4d", msg.get_data_len());
+    sprintf(len, "%4d", msg.send_data_len());
 
     char type[5];
     sprintf(type, "%4d", msg.get_msg_type());

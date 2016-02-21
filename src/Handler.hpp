@@ -58,6 +58,19 @@ public:
 
         cout << "buf size: " <<buf.size() <<endl;
     }
+
+    template <class T>
+    void parse_pb_message(T& t, boost::asio::streambuf& buf)
+    {
+        ostringstream os;
+        os << &buf;
+
+        string send_data (os.str());
+        t.ParseFromString(send_data);
+
+        cout << "buf size: " <<buf.size() <<endl;
+    }
+
 private:
 
     int get_len();  // 前4个字节为数据长度
