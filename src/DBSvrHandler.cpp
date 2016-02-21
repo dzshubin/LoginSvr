@@ -4,6 +4,7 @@
 #include "DBSvrHandler.hpp"
 #include "MsgStruct.hpp"
 #include "ClientMsgTypeDefine.hpp"
+#include "ConnManager.hpp"
 
 #include <string>
 
@@ -70,7 +71,17 @@ void DBSvrHandler::handle_verification ()
     packet.set_msg_type(static_cast<int>(L2D::Verification));
     packet.set_serialize_string(validate_info);
 
-    send_to_client(packet);
+
+    Conn_t* conn_ = ConnManager::get_instance()->get_conn(validate_result.m_nUserId);
+    if (conn_ != nullptr)
+    {
+        send_msg(conn_->m_socket, packet);
+    }
+    else
+    {
+        cout << "invalid conn!" << endl;
+    }
+
 
 //    // 获得人数最少的服务器端口
 //    auto svr_info = MsgSvrManager::get_instance()->get_best_svr();
