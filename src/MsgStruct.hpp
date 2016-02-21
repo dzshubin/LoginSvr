@@ -76,7 +76,7 @@ struct Msg_update_count
 
 struct Msg_validate_result
 {
-    Msg_validate_result (): m_bResult(false)
+    Msg_validate_result (): m_bResult(false), m_nUserId(0)
     {
     }
 
@@ -84,12 +84,14 @@ struct Msg_validate_result
     void serialize(Archive& ar, const unsigned int version)
     {
     	ar & m_bResult;
+    	ar & m_nUserId;
         ar & m_strIp;
-	ar & m_strPort;
+        ar & m_strPort;
     }
- 
+
 
     bool m_bResult;
+    uint64_t m_nUserId;
     std::string m_strIp;
     std::string m_strPort;
 };
