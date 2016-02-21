@@ -85,15 +85,11 @@ struct Msg_validate_result
     {
     	ar & m_bResult;
     	ar & m_nUserId;
-        ar & m_strIp;
-        ar & m_strPort;
     }
 
 
     bool m_bResult;
     uint64_t m_nUserId;
-    std::string m_strIp;
-    std::string m_strPort;
 };
 
 
