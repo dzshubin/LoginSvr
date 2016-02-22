@@ -71,7 +71,9 @@ set (Pb_used_libs ${Pb_lib})
 aux_source_directory (. DIR_SRCS)
 aux_source_directory (${Pb_file_path} PB_SRCS)
 
-ADD_EXECUTABLE(${PROJECT_NAME} ${DIR_SRCS} ${PB_SRCS})
+file(GLOB_RECURSE HEAD_FILES *h *hpp)
+
+ADD_EXECUTABLE(${PROJECT_NAME} ${DIR_SRCS} ${PB_SRCS} ${HEAD_FILES})
 
 
 #
