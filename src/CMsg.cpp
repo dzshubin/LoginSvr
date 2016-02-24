@@ -1,4 +1,4 @@
-#include "CMsg.h"
+#include "CMsg.hpp"
 
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
@@ -44,12 +44,9 @@ int CMsg::send_data_len()
     return m_send_data.size();
 }
 
-void CMsg::set_serialize_string (std::string data)
-{
-    m_send_data = std::move(data);
-}
 
-std::string& CMsg::get_send_data()
+
+std::string CMsg::get_send_data()
 {
     return m_send_data;
 }
