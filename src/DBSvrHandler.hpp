@@ -2,7 +2,7 @@
 #define DBSVRHANDLER_HPP_INCLUDED
 
 #include "Handler.hpp"
-#include "CMsg.h"
+#include "CMsg.hpp"
 #include <boost/asio/ip/tcp.hpp>
 
 

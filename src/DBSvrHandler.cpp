@@ -88,23 +88,23 @@ void DBSvrHandler::handle_verification ()
 
     }
 
-    string validate_info;
-    validate.SerializeToString(&validate_info);
-
-    CMsg packet;
-    packet.set_msg_type(static_cast<int>(L2D::Verification));
-    packet.set_serialize_string(validate_info);
-
-
-    Conn_t* conn_ = ConnManager::get_instance()->get_conn(validate_result.m_nUserId);
-    if (conn_ != nullptr)
-    {
-        send_msg(conn_->m_socket, packet);
-    }
-    else
-    {
-        cout << "invalid conn!" << endl;
-    }
+//    string validate_info;
+//    validate.SerializeToString(&validate_info);
+//
+//    CMsg packet;
+//    packet.set_msg_type(static_cast<int>(L2D::Verification));
+//    packet.set_serialize_string(validate_info);
+//
+//
+//    Conn_t* conn_ = ConnManager::get_instance()->get_conn(validate_result.m_nUserId);
+//    if (conn_ != nullptr)
+//    {
+//        send_msg(conn_->m_socket, packet);
+//    }
+//    else
+//    {
+//        cout << "invalid conn!" << endl;
+//    }
 }
 
 
