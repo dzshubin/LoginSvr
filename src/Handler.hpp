@@ -12,7 +12,7 @@
 #include <google/protobuf/descriptor.h>
 #include <google/protobuf/message.h>
 
-#include "CMsg.h"
+#include "CMsg.hpp"
 
 using namespace std;
 using namespace boost::asio;

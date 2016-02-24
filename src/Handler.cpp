@@ -145,14 +145,16 @@ void Handler::encode(CMsg& msg)
     // 序列化数据
     send_str.append(msg.get_send_data().c_str(), msg.send_data_len() + 1);
 
+
     // 数据总长度
-    int32_t len = sizeof(int32_t) + send_str.size() + 1;
+    int32_t len = sizeof(int32_t) + msg.send_data_len() + 1;
     int32_t be_len = ::htonl(len);
     std::copy(reinterpret_cast<char*>(&be_len),
               reinterpret_cast<char*>(&be_len) + sizeof(be_len),
               send_str.begin());
 
-    cout << "send data len: " << msg.send_data_len() << endl;
+
+    cout << "send data len: " << msg.send_data_len() + 1 << endl;
     cout << "send str size: " << send_str.size() << endl;
 }
 
