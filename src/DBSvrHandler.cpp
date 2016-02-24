@@ -35,7 +35,7 @@ void DBSvrHandler::start()
 }
 
 
-void DBSvrHandler::process_msg(int type_)
+void DBSvrHandler::process_msg(int type_,string /**/)
 {
     switch (type_)
     {

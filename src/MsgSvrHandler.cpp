@@ -16,7 +16,7 @@ void MsgSvrHandler::start()
     read_head_from_socket();
 }
 
-void MsgSvrHandler::process_msg(int type_)
+void MsgSvrHandler::process_msg(int type_,string)
 {
     std::cout << "type: " << type_ << std::endl;
     switch (type_)

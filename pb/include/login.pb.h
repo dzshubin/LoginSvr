@@ -104,12 +104,12 @@ class LoginAccount : public ::google::protobuf::Message {
 
   // accessors -------------------------------------------------------
 
-  // required uint64 id = 1;
+  // required int64 id = 1;
   bool has_id() const;
   void clear_id();
   static const int kIdFieldNumber = 1;
-  ::google::protobuf::uint64 id() const;
-  void set_id(::google::protobuf::uint64 value);
+  ::google::protobuf::int64 id() const;
+  void set_id(::google::protobuf::int64 value);
 
   // required string passwd = 2;
   bool has_passwd() const;
@@ -136,7 +136,7 @@ class LoginAccount : public ::google::protobuf::Message {
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   ::google::protobuf::uint32 _has_bits_[1];
   mutable int _cached_size_;
-  ::google::protobuf::uint64 id_;
+  ::google::protobuf::int64 id_;
   ::google::protobuf::internal::ArenaStringPtr passwd_;
   friend void  protobuf_AddDesc_login_2eproto();
   friend void protobuf_AssignDesc_login_2eproto();
@@ -153,7 +153,7 @@ class LoginAccount : public ::google::protobuf::Message {
 #if !PROTOBUF_INLINE_NOT_IN_HEADERS
 // LoginAccount
 
-// required uint64 id = 1;
+// required int64 id = 1;
 inline bool LoginAccount::has_id() const {
   return (_has_bits_[0] & 0x00000001u) != 0;
 }
@@ -164,14 +164,14 @@ inline void LoginAccount::clear_has_id() {
   _has_bits_[0] &= ~0x00000001u;
 }
 inline void LoginAccount::clear_id() {
-  id_ = GOOGLE_ULONGLONG(0);
+  id_ = GOOGLE_LONGLONG(0);
   clear_has_id();
 }
-inline ::google::protobuf::uint64 LoginAccount::id() const {
+inline ::google::protobuf::int64 LoginAccount::id() const {
   // @@protoc_insertion_point(field_get:IM.LoginAccount.id)
   return id_;
 }
-inline void LoginAccount::set_id(::google::protobuf::uint64 value) {
+inline void LoginAccount::set_id(::google::protobuf::int64 value) {
   set_has_id();
   id_ = value;
   // @@protoc_insertion_point(field_set:IM.LoginAccount.id)

@@ -17,7 +17,7 @@ public:
 
 public:
     virtual void start() override;
-    virtual void process_msg(int) override;
+    virtual void process_msg(int, string) override;
 
 
 private:

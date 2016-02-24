@@ -11,7 +11,7 @@ public:
     MsgSvrHandler(ip::tcp::socket);
 
     virtual void start() override;
-    virtual void process_msg(int) override;
+    virtual void process_msg(int,string) override;
 
 
 

@@ -81,7 +81,7 @@ void protobuf_AddDesc_login_2eproto() {
 
   ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
     "\n\013login.proto\022\002IM\"*\n\014LoginAccount\022\n\n\002id\030"
-    "\001 \002(\004\022\016\n\006passwd\030\002 \002(\t", 61);
+    "\001 \002(\003\022\016\n\006passwd\030\002 \002(\t", 61);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "login.proto", &protobuf_RegisterTypes);
   LoginAccount::default_instance_ = new LoginAccount();
@@ -133,7 +133,7 @@ LoginAccount::LoginAccount(const LoginAccount& from)
 void LoginAccount::SharedCtor() {
   ::google::protobuf::internal::GetEmptyString();
   _cached_size_ = 0;
-  id_ = GOOGLE_ULONGLONG(0);
+  id_ = GOOGLE_LONGLONG(0);
   passwd_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
@@ -176,7 +176,7 @@ LoginAccount* LoginAccount::New(::google::protobuf::Arena* arena) const {
 
 void LoginAccount::Clear() {
   if (_has_bits_[0 / 32] & 3u) {
-    id_ = GOOGLE_ULONGLONG(0);
+    id_ = GOOGLE_LONGLONG(0);
     if (has_passwd()) {
       passwd_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
     }
@@ -197,11 +197,11 @@ bool LoginAccount::MergePartialFromCodedStream(
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // required uint64 id = 1;
+      // required int64 id = 1;
       case 1: {
         if (tag == 8) {
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   ::google::protobuf::uint64, ::google::protobuf::internal::WireFormatLite::TYPE_UINT64>(
+                   ::google::protobuf::int64, ::google::protobuf::internal::WireFormatLite::TYPE_INT64>(
                  input, &id_)));
           set_has_id();
         } else {
@@ -253,9 +253,9 @@ failure:
 void LoginAccount::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
   // @@protoc_insertion_point(serialize_start:IM.LoginAccount)
-  // required uint64 id = 1;
+  // required int64 id = 1;
   if (has_id()) {
-    ::google::protobuf::internal::WireFormatLite::WriteUInt64(1, this->id(), output);
+    ::google::protobuf::internal::WireFormatLite::WriteInt64(1, this->id(), output);
   }
 
   // required string passwd = 2;
@@ -278,9 +278,9 @@ void LoginAccount::SerializeWithCachedSizes(
 ::google::protobuf::uint8* LoginAccount::SerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
   // @@protoc_insertion_point(serialize_to_array_start:IM.LoginAccount)
-  // required uint64 id = 1;
+  // required int64 id = 1;
   if (has_id()) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteUInt64ToArray(1, this->id(), target);
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt64ToArray(1, this->id(), target);
   }
 
   // required string passwd = 2;
@@ -306,9 +306,9 @@ int LoginAccount::RequiredFieldsByteSizeFallback() const {
   int total_size = 0;
 
   if (has_id()) {
-    // required uint64 id = 1;
+    // required int64 id = 1;
     total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::UInt64Size(
+      ::google::protobuf::internal::WireFormatLite::Int64Size(
         this->id());
   }
 
@@ -325,9 +325,9 @@ int LoginAccount::ByteSize() const {
   int total_size = 0;
 
   if (((_has_bits_[0] & 0x00000003) ^ 0x00000003) == 0) {  // All required fields are present.
-    // required uint64 id = 1;
+    // required int64 id = 1;
     total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::UInt64Size(
+      ::google::protobuf::internal::WireFormatLite::Int64Size(
         this->id());
 
     // required string passwd = 2;
@@ -418,7 +418,7 @@ void LoginAccount::InternalSwap(LoginAccount* other) {
 #if PROTOBUF_INLINE_NOT_IN_HEADERS
 // LoginAccount
 
-// required uint64 id = 1;
+// required int64 id = 1;
 bool LoginAccount::has_id() const {
   return (_has_bits_[0] & 0x00000001u) != 0;
 }
@@ -429,14 +429,14 @@ void LoginAccount::clear_has_id() {
   _has_bits_[0] &= ~0x00000001u;
 }
 void LoginAccount::clear_id() {
-  id_ = GOOGLE_ULONGLONG(0);
+  id_ = GOOGLE_LONGLONG(0);
   clear_has_id();
 }
- ::google::protobuf::uint64 LoginAccount::id() const {
+ ::google::protobuf::int64 LoginAccount::id() const {
   // @@protoc_insertion_point(field_get:IM.LoginAccount.id)
   return id_;
 }
- void LoginAccount::set_id(::google::protobuf::uint64 value) {
+ void LoginAccount::set_id(::google::protobuf::int64 value) {
   set_has_id();
   id_ = value;
   // @@protoc_insertion_point(field_set:IM.LoginAccount.id)

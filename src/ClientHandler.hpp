@@ -11,11 +11,11 @@ public:
 
 public:
     virtual void start() override;
-    virtual void process_msg(int) override;
+    virtual void process_msg(int,string) override;
 
 
 public:
-    void handle_UserLogin();
+    void handle_UserLogin(string);
 };
 
 

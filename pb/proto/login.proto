@@ -4,6 +4,6 @@ package IM;
 
 message LoginAccount
 {
-    required uint64 id = 1;
+    required int64 id = 1;
     required string passwd = 2;
 }

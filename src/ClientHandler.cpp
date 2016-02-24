@@ -8,6 +8,7 @@
 #include "DBSvrHandler.hpp"
 
 
+
 #include "login.pb.h"
 
 ClientHandler::ClientHandler(boost::asio::ip::tcp::socket sock_)
@@ -23,12 +24,12 @@ void ClientHandler::start()
 }
 
 
-void ClientHandler::process_msg(int type_)
+void ClientHandler::process_msg(int type_, string buf_)
 {
     switch (type_)
     {
     case (int)C2L::UserLogin:
-        handle_UserLogin();
+        handle_UserLogin(buf_);
         break;
     default:
         std::cout << "invalid msg type!" << std::endl;
@@ -38,25 +39,69 @@ void ClientHandler::process_msg(int type_)
 
 
 
-void ClientHandler::handle_UserLogin()
+void ClientHandler::handle_UserLogin(string trans_data)
 {
 
     // 账号密码验证
     GOOGLE_PROTOBUF_VERIFY_VERSION;
-    IM::LoginAccount account;
-    parse_pb_message(account, m_rBuf);
+    using namespace google::protobuf;
+
+    cout << "buf: " << trans_data.c_str() << "size：" << trans_data.size()<<endl;
+
+    // namelen
+    int32_t name_len = AsInt32(trans_data.c_str());
+    cout << "name_len: " << name_len << endl;
+
+    // type name
+    const char* chr_name = trans_data.c_str() + sizeof(int32_t);
+    string type_name = string(chr_name, name_len);
+    cout << "type_name: " << type_name << endl;
+
+    shared_ptr<google::protobuf::Message> p_ms = CreateMessage(type_name);
+
+    if (p_ms == nullptr)
+    {
+        cout << "fail!" << endl;
+        return;
+    }
+
+    // 反序列化
+    int size = trans_data.size();
+    p_ms->ParseFromArray(trans_data.c_str() + sizeof(int32_t) + name_len,
+                       size - sizeof(int32_t)-name_len);
 
 
-    ConnManager::get_instance()->insert_conn(account.id(), m_sock);
+    const Reflection* rf = p_ms->GetReflection();
+    const FieldDescriptor* f_id = p_ms->GetDescriptor()->FindFieldByName("id");
+    const FieldDescriptor* f_passwd = p_ms->GetDescriptor()->FindFieldByName("passwd");
+
+
+    int64_t id;
+    string passwd;
+
+    try
+    {
+        id = rf->GetInt64(*p_ms, f_id);
+        cout << id  << endl;
+
+        passwd = rf->GetString(*p_ms, f_passwd);
+        cout << passwd << endl;
+    }
+    catch (exception& e)
+    {
+        cout << e.what() << endl;
+    }
+
+
+    ConnManager::get_instance()->insert_conn(id, m_sock);
 
     Msg_login login_info;
-    login_info.m_nId = account.id();
-    login_info.m_passwd = account.passwd();
+    login_info.m_nId = id;
+    login_info.m_passwd = passwd;
 
     CMsg packet;
     packet.set_msg_type(static_cast<int>(L2D::Verification));
     packet.set_send_data(login_info);
-
     send_to_db (packet);
 
     google::protobuf::ShutdownProtobufLibrary();
