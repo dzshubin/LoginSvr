@@ -36,44 +36,36 @@ void protobuf_AddDesc_validate_2eproto();
 void protobuf_AssignDesc_validate_2eproto();
 void protobuf_ShutdownFile_validate_2eproto();
 
-class Validate;
+class ValidateResult;
 
 // ===================================================================
 
-class Validate : public ::google::protobuf::Message {
+class ValidateResult : public ::google::protobuf::Message {
  public:
-  Validate();
-  virtual ~Validate();
+  ValidateResult();
+  virtual ~ValidateResult();
 
-  Validate(const Validate& from);
+  ValidateResult(const ValidateResult& from);
 
-  inline Validate& operator=(const Validate& from) {
+  inline ValidateResult& operator=(const ValidateResult& from) {
     CopyFrom(from);
     return *this;
   }
 
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _internal_metadata_.unknown_fields();
-  }
-
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return _internal_metadata_.mutable_unknown_fields();
-  }
-
   static const ::google::protobuf::Descriptor* descriptor();
-  static const Validate& default_instance();
+  static const ValidateResult& default_instance();
 
-  void Swap(Validate* other);
+  void Swap(ValidateResult* other);
 
   // implements Message ----------------------------------------------
 
-  inline Validate* New() const { return New(NULL); }
+  inline ValidateResult* New() const { return New(NULL); }
 
-  Validate* New(::google::protobuf::Arena* arena) const;
+  ValidateResult* New(::google::protobuf::Arena* arena) const;
   void CopyFrom(const ::google::protobuf::Message& from);
   void MergeFrom(const ::google::protobuf::Message& from);
-  void CopyFrom(const Validate& from);
-  void MergeFrom(const Validate& from);
+  void CopyFrom(const ValidateResult& from);
+  void MergeFrom(const ValidateResult& from);
   void Clear();
   bool IsInitialized() const;
 
@@ -88,7 +80,7 @@ class Validate : public ::google::protobuf::Message {
   void SharedCtor();
   void SharedDtor();
   void SetCachedSize(int size) const;
-  void InternalSwap(Validate* other);
+  void InternalSwap(ValidateResult* other);
   private:
   inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
     return _internal_metadata_.arena();
@@ -104,15 +96,13 @@ class Validate : public ::google::protobuf::Message {
 
   // accessors -------------------------------------------------------
 
-  // required bool result = 1;
-  bool has_result() const;
+  // optional int32 result = 1;
   void clear_result();
   static const int kResultFieldNumber = 1;
-  bool result() const;
-  void set_result(bool value);
+  ::google::protobuf::int32 result() const;
+  void set_result(::google::protobuf::int32 value);
 
   // optional string ip = 2;
-  bool has_ip() const;
   void clear_ip();
   static const int kIpFieldNumber = 2;
   const ::std::string& ip() const;
@@ -124,7 +114,6 @@ class Validate : public ::google::protobuf::Message {
   void set_allocated_ip(::std::string* ip);
 
   // optional string port = 3;
-  bool has_port() const;
   void clear_port();
   static const int kPortFieldNumber = 3;
   const ::std::string& port() const;
@@ -135,27 +124,21 @@ class Validate : public ::google::protobuf::Message {
   ::std::string* release_port();
   void set_allocated_port(::std::string* port);
 
-  // @@protoc_insertion_point(class_scope:IM.Validate)
+  // @@protoc_insertion_point(class_scope:IM.ValidateResult)
  private:
-  inline void set_has_result();
-  inline void clear_has_result();
-  inline void set_has_ip();
-  inline void clear_has_ip();
-  inline void set_has_port();
-  inline void clear_has_port();
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
-  ::google::protobuf::uint32 _has_bits_[1];
-  mutable int _cached_size_;
+  bool _is_default_instance_;
   ::google::protobuf::internal::ArenaStringPtr ip_;
   ::google::protobuf::internal::ArenaStringPtr port_;
-  bool result_;
+  ::google::protobuf::int32 result_;
+  mutable int _cached_size_;
   friend void  protobuf_AddDesc_validate_2eproto();
   friend void protobuf_AssignDesc_validate_2eproto();
   friend void protobuf_ShutdownFile_validate_2eproto();
 
   void InitAsDefaultInstance();
-  static Validate* default_instance_;
+  static ValidateResult* default_instance_;
 };
 // ===================================================================
 
@@ -163,136 +146,106 @@ class Validate : public ::google::protobuf::Message {
 // ===================================================================
 
 #if !PROTOBUF_INLINE_NOT_IN_HEADERS
-// Validate
+// ValidateResult
 
-// required bool result = 1;
-inline bool Validate::has_result() const {
-  return (_has_bits_[0] & 0x00000001u) != 0;
+// optional int32 result = 1;
+inline void ValidateResult::clear_result() {
+  result_ = 0;
 }
-inline void Validate::set_has_result() {
-  _has_bits_[0] |= 0x00000001u;
-}
-inline void Validate::clear_has_result() {
-  _has_bits_[0] &= ~0x00000001u;
-}
-inline void Validate::clear_result() {
-  result_ = false;
-  clear_has_result();
-}
-inline bool Validate::result() const {
-  // @@protoc_insertion_point(field_get:IM.Validate.result)
+inline ::google::protobuf::int32 ValidateResult::result() const {
+  // @@protoc_insertion_point(field_get:IM.ValidateResult.result)
   return result_;
 }
-inline void Validate::set_result(bool value) {
-  set_has_result();
+inline void ValidateResult::set_result(::google::protobuf::int32 value) {
+  
   result_ = value;
-  // @@protoc_insertion_point(field_set:IM.Validate.result)
+  // @@protoc_insertion_point(field_set:IM.ValidateResult.result)
 }
 
 // optional string ip = 2;
-inline bool Validate::has_ip() const {
-  return (_has_bits_[0] & 0x00000002u) != 0;
-}
-inline void Validate::set_has_ip() {
-  _has_bits_[0] |= 0x00000002u;
-}
-inline void Validate::clear_has_ip() {
-  _has_bits_[0] &= ~0x00000002u;
-}
-inline void Validate::clear_ip() {
+inline void ValidateResult::clear_ip() {
   ip_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  clear_has_ip();
 }
-inline const ::std::string& Validate::ip() const {
-  // @@protoc_insertion_point(field_get:IM.Validate.ip)
+inline const ::std::string& ValidateResult::ip() const {
+  // @@protoc_insertion_point(field_get:IM.ValidateResult.ip)
   return ip_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline void Validate::set_ip(const ::std::string& value) {
-  set_has_ip();
+inline void ValidateResult::set_ip(const ::std::string& value) {
+  
   ip_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:IM.Validate.ip)
+  // @@protoc_insertion_point(field_set:IM.ValidateResult.ip)
 }
-inline void Validate::set_ip(const char* value) {
-  set_has_ip();
+inline void ValidateResult::set_ip(const char* value) {
+  
   ip_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:IM.Validate.ip)
+  // @@protoc_insertion_point(field_set_char:IM.ValidateResult.ip)
 }
-inline void Validate::set_ip(const char* value, size_t size) {
-  set_has_ip();
+inline void ValidateResult::set_ip(const char* value, size_t size) {
+  
   ip_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:IM.Validate.ip)
+  // @@protoc_insertion_point(field_set_pointer:IM.ValidateResult.ip)
 }
-inline ::std::string* Validate::mutable_ip() {
-  set_has_ip();
-  // @@protoc_insertion_point(field_mutable:IM.Validate.ip)
+inline ::std::string* ValidateResult::mutable_ip() {
+  
+  // @@protoc_insertion_point(field_mutable:IM.ValidateResult.ip)
   return ip_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline ::std::string* Validate::release_ip() {
-  clear_has_ip();
+inline ::std::string* ValidateResult::release_ip() {
+  
   return ip_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline void Validate::set_allocated_ip(::std::string* ip) {
+inline void ValidateResult::set_allocated_ip(::std::string* ip) {
   if (ip != NULL) {
-    set_has_ip();
+    
   } else {
-    clear_has_ip();
+    
   }
   ip_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ip);
-  // @@protoc_insertion_point(field_set_allocated:IM.Validate.ip)
+  // @@protoc_insertion_point(field_set_allocated:IM.ValidateResult.ip)
 }
 
 // optional string port = 3;
-inline bool Validate::has_port() const {
-  return (_has_bits_[0] & 0x00000004u) != 0;
-}
-inline void Validate::set_has_port() {
-  _has_bits_[0] |= 0x00000004u;
-}
-inline void Validate::clear_has_port() {
-  _has_bits_[0] &= ~0x00000004u;
-}
-inline void Validate::clear_port() {
+inline void ValidateResult::clear_port() {
   port_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  clear_has_port();
 }
-inline const ::std::string& Validate::port() const {
-  // @@protoc_insertion_point(field_get:IM.Validate.port)
+inline const ::std::string& ValidateResult::port() const {
+  // @@protoc_insertion_point(field_get:IM.ValidateResult.port)
   return port_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline void Validate::set_port(const ::std::string& value) {
-  set_has_port();
+inline void ValidateResult::set_port(const ::std::string& value) {
+  
   port_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:IM.Validate.port)
+  // @@protoc_insertion_point(field_set:IM.ValidateResult.port)
 }
-inline void Validate::set_port(const char* value) {
-  set_has_port();
+inline void ValidateResult::set_port(const char* value) {
+  
   port_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:IM.Validate.port)
+  // @@protoc_insertion_point(field_set_char:IM.ValidateResult.port)
 }
-inline void Validate::set_port(const char* value, size_t size) {
-  set_has_port();
+inline void ValidateResult::set_port(const char* value, size_t size) {
+  
   port_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:IM.Validate.port)
+  // @@protoc_insertion_point(field_set_pointer:IM.ValidateResult.port)
 }
-inline ::std::string* Validate::mutable_port() {
-  set_has_port();
-  // @@protoc_insertion_point(field_mutable:IM.Validate.port)
+inline ::std::string* ValidateResult::mutable_port() {
+  
+  // @@protoc_insertion_point(field_mutable:IM.ValidateResult.port)
   return port_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline ::std::string* Validate::release_port() {
-  clear_has_port();
+inline ::std::string* ValidateResult::release_port() {
+  
   return port_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline void Validate::set_allocated_port(::std::string* port) {
+inline void ValidateResult::set_allocated_port(::std::string* port) {
   if (port != NULL) {
-    set_has_port();
+    
   } else {
-    clear_has_port();
+    
   }
   port_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), port);
-  // @@protoc_insertion_point(field_set_allocated:IM.Validate.port)
+  // @@protoc_insertion_point(field_set_allocated:IM.ValidateResult.port)
 }
 
 #endif  // !PROTOBUF_INLINE_NOT_IN_HEADERS

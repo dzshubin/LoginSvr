@@ -52,14 +52,6 @@ class LoginAccount : public ::google::protobuf::Message {
     return *this;
   }
 
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _internal_metadata_.unknown_fields();
-  }
-
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return _internal_metadata_.mutable_unknown_fields();
-  }
-
   static const ::google::protobuf::Descriptor* descriptor();
   static const LoginAccount& default_instance();
 
@@ -104,15 +96,13 @@ class LoginAccount : public ::google::protobuf::Message {
 
   // accessors -------------------------------------------------------
 
-  // required int64 id = 1;
-  bool has_id() const;
+  // optional int64 id = 1;
   void clear_id();
   static const int kIdFieldNumber = 1;
   ::google::protobuf::int64 id() const;
   void set_id(::google::protobuf::int64 value);
 
-  // required string passwd = 2;
-  bool has_passwd() const;
+  // optional string passwd = 2;
   void clear_passwd();
   static const int kPasswdFieldNumber = 2;
   const ::std::string& passwd() const;
@@ -125,19 +115,12 @@ class LoginAccount : public ::google::protobuf::Message {
 
   // @@protoc_insertion_point(class_scope:IM.LoginAccount)
  private:
-  inline void set_has_id();
-  inline void clear_has_id();
-  inline void set_has_passwd();
-  inline void clear_has_passwd();
-
-  // helper for ByteSize()
-  int RequiredFieldsByteSizeFallback() const;
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
-  ::google::protobuf::uint32 _has_bits_[1];
-  mutable int _cached_size_;
+  bool _is_default_instance_;
   ::google::protobuf::int64 id_;
   ::google::protobuf::internal::ArenaStringPtr passwd_;
+  mutable int _cached_size_;
   friend void  protobuf_AddDesc_login_2eproto();
   friend void protobuf_AssignDesc_login_2eproto();
   friend void protobuf_ShutdownFile_login_2eproto();
@@ -153,78 +136,58 @@ class LoginAccount : public ::google::protobuf::Message {
 #if !PROTOBUF_INLINE_NOT_IN_HEADERS
 // LoginAccount
 
-// required int64 id = 1;
-inline bool LoginAccount::has_id() const {
-  return (_has_bits_[0] & 0x00000001u) != 0;
-}
-inline void LoginAccount::set_has_id() {
-  _has_bits_[0] |= 0x00000001u;
-}
-inline void LoginAccount::clear_has_id() {
-  _has_bits_[0] &= ~0x00000001u;
-}
+// optional int64 id = 1;
 inline void LoginAccount::clear_id() {
   id_ = GOOGLE_LONGLONG(0);
-  clear_has_id();
 }
 inline ::google::protobuf::int64 LoginAccount::id() const {
   // @@protoc_insertion_point(field_get:IM.LoginAccount.id)
   return id_;
 }
 inline void LoginAccount::set_id(::google::protobuf::int64 value) {
-  set_has_id();
+  
   id_ = value;
   // @@protoc_insertion_point(field_set:IM.LoginAccount.id)
 }
 
-// required string passwd = 2;
-inline bool LoginAccount::has_passwd() const {
-  return (_has_bits_[0] & 0x00000002u) != 0;
-}
-inline void LoginAccount::set_has_passwd() {
-  _has_bits_[0] |= 0x00000002u;
-}
-inline void LoginAccount::clear_has_passwd() {
-  _has_bits_[0] &= ~0x00000002u;
-}
+// optional string passwd = 2;
 inline void LoginAccount::clear_passwd() {
   passwd_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  clear_has_passwd();
 }
 inline const ::std::string& LoginAccount::passwd() const {
   // @@protoc_insertion_point(field_get:IM.LoginAccount.passwd)
   return passwd_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline void LoginAccount::set_passwd(const ::std::string& value) {
-  set_has_passwd();
+  
   passwd_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
   // @@protoc_insertion_point(field_set:IM.LoginAccount.passwd)
 }
 inline void LoginAccount::set_passwd(const char* value) {
-  set_has_passwd();
+  
   passwd_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
   // @@protoc_insertion_point(field_set_char:IM.LoginAccount.passwd)
 }
 inline void LoginAccount::set_passwd(const char* value, size_t size) {
-  set_has_passwd();
+  
   passwd_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
   // @@protoc_insertion_point(field_set_pointer:IM.LoginAccount.passwd)
 }
 inline ::std::string* LoginAccount::mutable_passwd() {
-  set_has_passwd();
+  
   // @@protoc_insertion_point(field_mutable:IM.LoginAccount.passwd)
   return passwd_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline ::std::string* LoginAccount::release_passwd() {
-  clear_has_passwd();
+  
   return passwd_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline void LoginAccount::set_allocated_passwd(::std::string* passwd) {
   if (passwd != NULL) {
-    set_has_passwd();
+    
   } else {
-    clear_has_passwd();
+    
   }
   passwd_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), passwd);
   // @@protoc_insertion_point(field_set_allocated:IM.LoginAccount.passwd)

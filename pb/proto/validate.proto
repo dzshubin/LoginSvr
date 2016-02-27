@@ -1,11 +1,12 @@
 
 
+syntax = "proto3";
 package IM;
 
-message Validate
+message ValidateResult
 {
-    required bool result = 1;
-    optional string ip = 2;
-    optional string port = 3;
+    int32 result = 1;		// 0-成功 1-失败 2-没有可用的服务器
+    string ip = 2;
+    string port = 3;
 
 };

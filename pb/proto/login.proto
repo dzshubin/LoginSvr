@@ -1,9 +1,9 @@
 
-
+syntax = "proto3";
 package IM;
 
 message LoginAccount
 {
-    required int64 id = 1;
-    required string passwd = 2;
+    int64 id = 1;
+    string passwd = 2;
 }

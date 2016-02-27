@@ -21,9 +21,9 @@ namespace IM {
 
 namespace {
 
-const ::google::protobuf::Descriptor* Validate_descriptor_ = NULL;
+const ::google::protobuf::Descriptor* ValidateResult_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
-  Validate_reflection_ = NULL;
+  ValidateResult_reflection_ = NULL;
 
 }  // namespace
 
@@ -34,23 +34,23 @@ void protobuf_AssignDesc_validate_2eproto() {
     ::google::protobuf::DescriptorPool::generated_pool()->FindFileByName(
       "validate.proto");
   GOOGLE_CHECK(file != NULL);
-  Validate_descriptor_ = file->message_type(0);
-  static const int Validate_offsets_[3] = {
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Validate, result_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Validate, ip_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Validate, port_),
+  ValidateResult_descriptor_ = file->message_type(0);
+  static const int ValidateResult_offsets_[3] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ValidateResult, result_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ValidateResult, ip_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ValidateResult, port_),
   };
-  Validate_reflection_ =
+  ValidateResult_reflection_ =
     ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
-      Validate_descriptor_,
-      Validate::default_instance_,
-      Validate_offsets_,
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Validate, _has_bits_[0]),
+      ValidateResult_descriptor_,
+      ValidateResult::default_instance_,
+      ValidateResult_offsets_,
       -1,
       -1,
-      sizeof(Validate),
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Validate, _internal_metadata_),
-      -1);
+      -1,
+      sizeof(ValidateResult),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ValidateResult, _internal_metadata_),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ValidateResult, _is_default_instance_));
 }
 
 namespace {
@@ -64,14 +64,14 @@ inline void protobuf_AssignDescriptorsOnce() {
 void protobuf_RegisterTypes(const ::std::string&) {
   protobuf_AssignDescriptorsOnce();
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
-      Validate_descriptor_, &Validate::default_instance());
+      ValidateResult_descriptor_, &ValidateResult::default_instance());
 }
 
 }  // namespace
 
 void protobuf_ShutdownFile_validate_2eproto() {
-  delete Validate::default_instance_;
-  delete Validate_reflection_;
+  delete ValidateResult::default_instance_;
+  delete ValidateResult_reflection_;
 }
 
 void protobuf_AddDesc_validate_2eproto() {
@@ -81,12 +81,13 @@ void protobuf_AddDesc_validate_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
   ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
-    "\n\016validate.proto\022\002IM\"4\n\010Validate\022\016\n\006resu"
-    "lt\030\001 \002(\010\022\n\n\002ip\030\002 \001(\t\022\014\n\004port\030\003 \001(\t", 74);
+    "\n\016validate.proto\022\002IM\":\n\016ValidateResult\022\016"
+    "\n\006result\030\001 \001(\005\022\n\n\002ip\030\002 \001(\t\022\014\n\004port\030\003 \001(\t"
+    "b\006proto3", 88);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "validate.proto", &protobuf_RegisterTypes);
-  Validate::default_instance_ = new Validate();
-  Validate::default_instance_->InitAsDefaultInstance();
+  ValidateResult::default_instance_ = new ValidateResult();
+  ValidateResult::default_instance_->InitAsDefaultInstance();
   ::google::protobuf::internal::OnShutdown(&protobuf_ShutdownFile_validate_2eproto);
 }
 
@@ -110,107 +111,98 @@ static void MergeFromFail(int line) {
 // ===================================================================
 
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
-const int Validate::kResultFieldNumber;
-const int Validate::kIpFieldNumber;
-const int Validate::kPortFieldNumber;
+const int ValidateResult::kResultFieldNumber;
+const int ValidateResult::kIpFieldNumber;
+const int ValidateResult::kPortFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
-Validate::Validate()
+ValidateResult::ValidateResult()
   : ::google::protobuf::Message(), _internal_metadata_(NULL) {
   SharedCtor();
-  // @@protoc_insertion_point(constructor:IM.Validate)
+  // @@protoc_insertion_point(constructor:IM.ValidateResult)
 }
 
-void Validate::InitAsDefaultInstance() {
+void ValidateResult::InitAsDefaultInstance() {
+  _is_default_instance_ = true;
 }
 
-Validate::Validate(const Validate& from)
+ValidateResult::ValidateResult(const ValidateResult& from)
   : ::google::protobuf::Message(),
     _internal_metadata_(NULL) {
   SharedCtor();
   MergeFrom(from);
-  // @@protoc_insertion_point(copy_constructor:IM.Validate)
+  // @@protoc_insertion_point(copy_constructor:IM.ValidateResult)
 }
 
-void Validate::SharedCtor() {
+void ValidateResult::SharedCtor() {
+    _is_default_instance_ = false;
   ::google::protobuf::internal::GetEmptyString();
   _cached_size_ = 0;
-  result_ = false;
+  result_ = 0;
   ip_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   port_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
-Validate::~Validate() {
-  // @@protoc_insertion_point(destructor:IM.Validate)
+ValidateResult::~ValidateResult() {
+  // @@protoc_insertion_point(destructor:IM.ValidateResult)
   SharedDtor();
 }
 
-void Validate::SharedDtor() {
+void ValidateResult::SharedDtor() {
   ip_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   port_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   if (this != default_instance_) {
   }
 }
 
-void Validate::SetCachedSize(int size) const {
+void ValidateResult::SetCachedSize(int size) const {
   GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
   _cached_size_ = size;
   GOOGLE_SAFE_CONCURRENT_WRITES_END();
 }
-const ::google::protobuf::Descriptor* Validate::descriptor() {
+const ::google::protobuf::Descriptor* ValidateResult::descriptor() {
   protobuf_AssignDescriptorsOnce();
-  return Validate_descriptor_;
+  return ValidateResult_descriptor_;
 }
 
-const Validate& Validate::default_instance() {
+const ValidateResult& ValidateResult::default_instance() {
   if (default_instance_ == NULL) protobuf_AddDesc_validate_2eproto();
   return *default_instance_;
 }
 
-Validate* Validate::default_instance_ = NULL;
+ValidateResult* ValidateResult::default_instance_ = NULL;
 
-Validate* Validate::New(::google::protobuf::Arena* arena) const {
-  Validate* n = new Validate;
+ValidateResult* ValidateResult::New(::google::protobuf::Arena* arena) const {
+  ValidateResult* n = new ValidateResult;
   if (arena != NULL) {
     arena->Own(n);
   }
   return n;
 }
 
-void Validate::Clear() {
-  if (_has_bits_[0 / 32] & 7u) {
-    result_ = false;
-    if (has_ip()) {
-      ip_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-    }
-    if (has_port()) {
-      port_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-    }
-  }
-  ::memset(_has_bits_, 0, sizeof(_has_bits_));
-  if (_internal_metadata_.have_unknown_fields()) {
-    mutable_unknown_fields()->Clear();
-  }
+void ValidateResult::Clear() {
+  result_ = 0;
+  ip_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  port_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 
-bool Validate::MergePartialFromCodedStream(
+bool ValidateResult::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
 #define DO_(EXPRESSION) if (!(EXPRESSION)) goto failure
   ::google::protobuf::uint32 tag;
-  // @@protoc_insertion_point(parse_start:IM.Validate)
+  // @@protoc_insertion_point(parse_start:IM.ValidateResult)
   for (;;) {
     ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // required bool result = 1;
+      // optional int32 result = 1;
       case 1: {
         if (tag == 8) {
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   bool, ::google::protobuf::internal::WireFormatLite::TYPE_BOOL>(
+                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
                  input, &result_)));
-          set_has_result();
+
         } else {
           goto handle_unusual;
         }
@@ -224,10 +216,10 @@ bool Validate::MergePartialFromCodedStream(
          parse_ip:
           DO_(::google::protobuf::internal::WireFormatLite::ReadString(
                 input, this->mutable_ip()));
-          ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
+          DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
             this->ip().data(), this->ip().length(),
-            ::google::protobuf::internal::WireFormat::PARSE,
-            "IM.Validate.ip");
+            ::google::protobuf::internal::WireFormatLite::PARSE,
+            "IM.ValidateResult.ip"));
         } else {
           goto handle_unusual;
         }
@@ -241,10 +233,10 @@ bool Validate::MergePartialFromCodedStream(
          parse_port:
           DO_(::google::protobuf::internal::WireFormatLite::ReadString(
                 input, this->mutable_port()));
-          ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
+          DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
             this->port().data(), this->port().length(),
-            ::google::protobuf::internal::WireFormat::PARSE,
-            "IM.Validate.port");
+            ::google::protobuf::internal::WireFormatLite::PARSE,
+            "IM.ValidateResult.port"));
         } else {
           goto handle_unusual;
         }
@@ -259,132 +251,119 @@ bool Validate::MergePartialFromCodedStream(
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
           goto success;
         }
-        DO_(::google::protobuf::internal::WireFormat::SkipField(
-              input, tag, mutable_unknown_fields()));
+        DO_(::google::protobuf::internal::WireFormatLite::SkipField(input, tag));
         break;
       }
     }
   }
 success:
-  // @@protoc_insertion_point(parse_success:IM.Validate)
+  // @@protoc_insertion_point(parse_success:IM.ValidateResult)
   return true;
 failure:
-  // @@protoc_insertion_point(parse_failure:IM.Validate)
+  // @@protoc_insertion_point(parse_failure:IM.ValidateResult)
   return false;
 #undef DO_
 }
 
-void Validate::SerializeWithCachedSizes(
+void ValidateResult::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:IM.Validate)
-  // required bool result = 1;
-  if (has_result()) {
-    ::google::protobuf::internal::WireFormatLite::WriteBool(1, this->result(), output);
+  // @@protoc_insertion_point(serialize_start:IM.ValidateResult)
+  // optional int32 result = 1;
+  if (this->result() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt32(1, this->result(), output);
   }
 
   // optional string ip = 2;
-  if (has_ip()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
+  if (this->ip().size() > 0) {
+    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->ip().data(), this->ip().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE,
-      "IM.Validate.ip");
+      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
+      "IM.ValidateResult.ip");
     ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
       2, this->ip(), output);
   }
 
   // optional string port = 3;
-  if (has_port()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
+  if (this->port().size() > 0) {
+    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->port().data(), this->port().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE,
-      "IM.Validate.port");
+      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
+      "IM.ValidateResult.port");
     ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
       3, this->port(), output);
   }
 
-  if (_internal_metadata_.have_unknown_fields()) {
-    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
-        unknown_fields(), output);
-  }
-  // @@protoc_insertion_point(serialize_end:IM.Validate)
+  // @@protoc_insertion_point(serialize_end:IM.ValidateResult)
 }
 
-::google::protobuf::uint8* Validate::SerializeWithCachedSizesToArray(
+::google::protobuf::uint8* ValidateResult::SerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
-  // @@protoc_insertion_point(serialize_to_array_start:IM.Validate)
-  // required bool result = 1;
-  if (has_result()) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteBoolToArray(1, this->result(), target);
+  // @@protoc_insertion_point(serialize_to_array_start:IM.ValidateResult)
+  // optional int32 result = 1;
+  if (this->result() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(1, this->result(), target);
   }
 
   // optional string ip = 2;
-  if (has_ip()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
+  if (this->ip().size() > 0) {
+    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->ip().data(), this->ip().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE,
-      "IM.Validate.ip");
+      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
+      "IM.ValidateResult.ip");
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
         2, this->ip(), target);
   }
 
   // optional string port = 3;
-  if (has_port()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
+  if (this->port().size() > 0) {
+    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->port().data(), this->port().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE,
-      "IM.Validate.port");
+      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
+      "IM.ValidateResult.port");
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
         3, this->port(), target);
   }
 
-  if (_internal_metadata_.have_unknown_fields()) {
-    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
-        unknown_fields(), target);
-  }
-  // @@protoc_insertion_point(serialize_to_array_end:IM.Validate)
+  // @@protoc_insertion_point(serialize_to_array_end:IM.ValidateResult)
   return target;
 }
 
-int Validate::ByteSize() const {
+int ValidateResult::ByteSize() const {
   int total_size = 0;
 
-  // required bool result = 1;
-  if (has_result()) {
-    total_size += 1 + 1;
+  // optional int32 result = 1;
+  if (this->result() != 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::Int32Size(
+        this->result());
   }
-  if (_has_bits_[1 / 32] & 6u) {
-    // optional string ip = 2;
-    if (has_ip()) {
-      total_size += 1 +
-        ::google::protobuf::internal::WireFormatLite::StringSize(
-          this->ip());
-    }
 
-    // optional string port = 3;
-    if (has_port()) {
-      total_size += 1 +
-        ::google::protobuf::internal::WireFormatLite::StringSize(
-          this->port());
-    }
+  // optional string ip = 2;
+  if (this->ip().size() > 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::StringSize(
+        this->ip());
+  }
 
+  // optional string port = 3;
+  if (this->port().size() > 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::StringSize(
+        this->port());
   }
-  if (_internal_metadata_.have_unknown_fields()) {
-    total_size +=
-      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
-        unknown_fields());
-  }
+
   GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
   _cached_size_ = total_size;
   GOOGLE_SAFE_CONCURRENT_WRITES_END();
   return total_size;
 }
 
-void Validate::MergeFrom(const ::google::protobuf::Message& from) {
+void ValidateResult::MergeFrom(const ::google::protobuf::Message& from) {
   if (GOOGLE_PREDICT_FALSE(&from == this)) MergeFromFail(__LINE__);
-  const Validate* source = 
-      ::google::protobuf::internal::DynamicCastToGenerated<const Validate>(
+  const ValidateResult* source = 
+      ::google::protobuf::internal::DynamicCastToGenerated<const ValidateResult>(
           &from);
   if (source == NULL) {
     ::google::protobuf::internal::ReflectionOps::Merge(from, this);
@@ -393,196 +372,159 @@ void Validate::MergeFrom(const ::google::protobuf::Message& from) {
   }
 }
 
-void Validate::MergeFrom(const Validate& from) {
+void ValidateResult::MergeFrom(const ValidateResult& from) {
   if (GOOGLE_PREDICT_FALSE(&from == this)) MergeFromFail(__LINE__);
-  if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    if (from.has_result()) {
-      set_result(from.result());
-    }
-    if (from.has_ip()) {
-      set_has_ip();
-      ip_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.ip_);
-    }
-    if (from.has_port()) {
-      set_has_port();
-      port_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.port_);
-    }
+  if (from.result() != 0) {
+    set_result(from.result());
   }
-  if (from._internal_metadata_.have_unknown_fields()) {
-    mutable_unknown_fields()->MergeFrom(from.unknown_fields());
+  if (from.ip().size() > 0) {
+
+    ip_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.ip_);
+  }
+  if (from.port().size() > 0) {
+
+    port_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.port_);
   }
 }
 
-void Validate::CopyFrom(const ::google::protobuf::Message& from) {
+void ValidateResult::CopyFrom(const ::google::protobuf::Message& from) {
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
-void Validate::CopyFrom(const Validate& from) {
+void ValidateResult::CopyFrom(const ValidateResult& from) {
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
-bool Validate::IsInitialized() const {
-  if ((_has_bits_[0] & 0x00000001) != 0x00000001) return false;
+bool ValidateResult::IsInitialized() const {
 
   return true;
 }
 
-void Validate::Swap(Validate* other) {
+void ValidateResult::Swap(ValidateResult* other) {
   if (other == this) return;
   InternalSwap(other);
 }
-void Validate::InternalSwap(Validate* other) {
+void ValidateResult::InternalSwap(ValidateResult* other) {
   std::swap(result_, other->result_);
   ip_.Swap(&other->ip_);
   port_.Swap(&other->port_);
-  std::swap(_has_bits_[0], other->_has_bits_[0]);
   _internal_metadata_.Swap(&other->_internal_metadata_);
   std::swap(_cached_size_, other->_cached_size_);
 }
 
-::google::protobuf::Metadata Validate::GetMetadata() const {
+::google::protobuf::Metadata ValidateResult::GetMetadata() const {
   protobuf_AssignDescriptorsOnce();
   ::google::protobuf::Metadata metadata;
-  metadata.descriptor = Validate_descriptor_;
-  metadata.reflection = Validate_reflection_;
+  metadata.descriptor = ValidateResult_descriptor_;
+  metadata.reflection = ValidateResult_reflection_;
   return metadata;
 }
 
 #if PROTOBUF_INLINE_NOT_IN_HEADERS
-// Validate
+// ValidateResult
 
-// required bool result = 1;
-bool Validate::has_result() const {
-  return (_has_bits_[0] & 0x00000001u) != 0;
+// optional int32 result = 1;
+void ValidateResult::clear_result() {
+  result_ = 0;
 }
-void Validate::set_has_result() {
-  _has_bits_[0] |= 0x00000001u;
-}
-void Validate::clear_has_result() {
-  _has_bits_[0] &= ~0x00000001u;
-}
-void Validate::clear_result() {
-  result_ = false;
-  clear_has_result();
-}
- bool Validate::result() const {
-  // @@protoc_insertion_point(field_get:IM.Validate.result)
+ ::google::protobuf::int32 ValidateResult::result() const {
+  // @@protoc_insertion_point(field_get:IM.ValidateResult.result)
   return result_;
 }
- void Validate::set_result(bool value) {
-  set_has_result();
+ void ValidateResult::set_result(::google::protobuf::int32 value) {
+  
   result_ = value;
-  // @@protoc_insertion_point(field_set:IM.Validate.result)
+  // @@protoc_insertion_point(field_set:IM.ValidateResult.result)
 }
 
 // optional string ip = 2;
-bool Validate::has_ip() const {
-  return (_has_bits_[0] & 0x00000002u) != 0;
-}
-void Validate::set_has_ip() {
-  _has_bits_[0] |= 0x00000002u;
-}
-void Validate::clear_has_ip() {
-  _has_bits_[0] &= ~0x00000002u;
-}
-void Validate::clear_ip() {
+void ValidateResult::clear_ip() {
   ip_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  clear_has_ip();
 }
- const ::std::string& Validate::ip() const {
-  // @@protoc_insertion_point(field_get:IM.Validate.ip)
+ const ::std::string& ValidateResult::ip() const {
+  // @@protoc_insertion_point(field_get:IM.ValidateResult.ip)
   return ip_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
- void Validate::set_ip(const ::std::string& value) {
-  set_has_ip();
+ void ValidateResult::set_ip(const ::std::string& value) {
+  
   ip_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:IM.Validate.ip)
+  // @@protoc_insertion_point(field_set:IM.ValidateResult.ip)
 }
- void Validate::set_ip(const char* value) {
-  set_has_ip();
+ void ValidateResult::set_ip(const char* value) {
+  
   ip_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:IM.Validate.ip)
+  // @@protoc_insertion_point(field_set_char:IM.ValidateResult.ip)
 }
- void Validate::set_ip(const char* value, size_t size) {
-  set_has_ip();
+ void ValidateResult::set_ip(const char* value, size_t size) {
+  
   ip_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:IM.Validate.ip)
+  // @@protoc_insertion_point(field_set_pointer:IM.ValidateResult.ip)
 }
- ::std::string* Validate::mutable_ip() {
-  set_has_ip();
-  // @@protoc_insertion_point(field_mutable:IM.Validate.ip)
+ ::std::string* ValidateResult::mutable_ip() {
+  
+  // @@protoc_insertion_point(field_mutable:IM.ValidateResult.ip)
   return ip_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
- ::std::string* Validate::release_ip() {
-  clear_has_ip();
+ ::std::string* ValidateResult::release_ip() {
+  
   return ip_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
- void Validate::set_allocated_ip(::std::string* ip) {
+ void ValidateResult::set_allocated_ip(::std::string* ip) {
   if (ip != NULL) {
-    set_has_ip();
+    
   } else {
-    clear_has_ip();
+    
   }
   ip_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ip);
-  // @@protoc_insertion_point(field_set_allocated:IM.Validate.ip)
+  // @@protoc_insertion_point(field_set_allocated:IM.ValidateResult.ip)
 }
 
 // optional string port = 3;
-bool Validate::has_port() const {
-  return (_has_bits_[0] & 0x00000004u) != 0;
-}
-void Validate::set_has_port() {
-  _has_bits_[0] |= 0x00000004u;
-}
-void Validate::clear_has_port() {
-  _has_bits_[0] &= ~0x00000004u;
-}
-void Validate::clear_port() {
+void ValidateResult::clear_port() {
   port_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  clear_has_port();
 }
- const ::std::string& Validate::port() const {
-  // @@protoc_insertion_point(field_get:IM.Validate.port)
+ const ::std::string& ValidateResult::port() const {
+  // @@protoc_insertion_point(field_get:IM.ValidateResult.port)
   return port_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
- void Validate::set_port(const ::std::string& value) {
-  set_has_port();
+ void ValidateResult::set_port(const ::std::string& value) {
+  
   port_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:IM.Validate.port)
+  // @@protoc_insertion_point(field_set:IM.ValidateResult.port)
 }
- void Validate::set_port(const char* value) {
-  set_has_port();
+ void ValidateResult::set_port(const char* value) {
+  
   port_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:IM.Validate.port)
+  // @@protoc_insertion_point(field_set_char:IM.ValidateResult.port)
 }
- void Validate::set_port(const char* value, size_t size) {
-  set_has_port();
+ void ValidateResult::set_port(const char* value, size_t size) {
+  
   port_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:IM.Validate.port)
+  // @@protoc_insertion_point(field_set_pointer:IM.ValidateResult.port)
 }
- ::std::string* Validate::mutable_port() {
-  set_has_port();
-  // @@protoc_insertion_point(field_mutable:IM.Validate.port)
+ ::std::string* ValidateResult::mutable_port() {
+  
+  // @@protoc_insertion_point(field_mutable:IM.ValidateResult.port)
   return port_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
- ::std::string* Validate::release_port() {
-  clear_has_port();
+ ::std::string* ValidateResult::release_port() {
+  
   return port_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
- void Validate::set_allocated_port(::std::string* port) {
+ void ValidateResult::set_allocated_port(::std::string* port) {
   if (port != NULL) {
-    set_has_port();
+    
   } else {
-    clear_has_port();
+    
   }
   port_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), port);
-  // @@protoc_insertion_point(field_set_allocated:IM.Validate.port)
+  // @@protoc_insertion_point(field_set_allocated:IM.ValidateResult.port)
 }
 
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
