@@ -10,6 +10,7 @@
 
 
 #include "login.pb.h"
+#include "validate.pb.h"
 
 ClientHandler::ClientHandler(boost::asio::ip::tcp::socket sock_)
   :Handler(std::move(sock_))
@@ -89,9 +90,10 @@ void ClientHandler::handle_UserLogin(string trans_data)
     }
     catch (exception& e)
     {
-        cout << e.what() << endl;
+        cout << "# ERR: exception in " << __FILE__;
+        cout << "(" << __FUNCTION__ << ") on line " << __LINE__ << endl;
+        cout << "# ERR: " << e.what() << endl;
     }
-
 
     ConnManager::get_instance()->insert_conn(id, m_sock);
 
@@ -101,7 +103,7 @@ void ClientHandler::handle_UserLogin(string trans_data)
 
     CMsg packet;
     packet.set_msg_type(static_cast<int>(L2D::Verification));
-    packet.set_send_data(login_info);
+    packet.serialization_data_Asio(login_info);
     send_to_db (packet);
 
     google::protobuf::ShutdownProtobufLibrary();

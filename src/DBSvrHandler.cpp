@@ -14,6 +14,15 @@
 DBSvrHandler* g_db_handler = nullptr;
 
 
+enum class VALIDATE_STATUS
+{
+    SUCCESS = 0,
+    FAIL    = 1,
+    NO_SVR  = 2,
+};
+
+
+
 /***********************************
  *
  *
@@ -35,12 +44,12 @@ void DBSvrHandler::start()
 }
 
 
-void DBSvrHandler::process_msg(int type_,string /**/)
+void DBSvrHandler::process_msg(int type_,string buf_)
 {
     switch (type_)
     {
     case (int)L2D::Verification:
-        handle_verification();
+        handle_verification(buf_);
         break;
 
     default:
@@ -53,17 +62,19 @@ void DBSvrHandler::process_msg(int type_,string /**/)
 
 
 
-void DBSvrHandler::handle_verification ()
+void DBSvrHandler::handle_verification (string buf_)
 {
-    Msg_validate_result validate_result;
-    deserialization(validate_result, m_rBuf);
+    Msg_validate_result s2s_validate;
+    deserialization(s2s_validate, buf_);
 
 
-    IM::Validate validate;
-    validate.set_result(validate_result.m_bResult);
+    IM::ValidateResult s2c_validate;
+    int32_t result = static_cast<int32_t>(s2s_validate.m_bResult ? VALIDATE_STATUS::SUCCESS : VALIDATE_STATUS::FAIL);
+    s2c_validate.set_result(result);
+
 
     // 如果验证通过
-    if (validate_result.m_bResult)
+    if (s2s_validate.m_bResult)
     {
         // 获得人数最少的服务器端口
         auto svr_info = MsgSvrManager::get_instance()->get_best_svr();
@@ -74,37 +85,35 @@ void DBSvrHandler::handle_verification ()
             int nAllocatePort = std::get<0>(svr_info);
             std::cout << "allocate msgsvr port: " <<  nAllocatePort << std::endl;
 
-            validate.set_port(to_string(nAllocatePort));
-            validate.set_ip("127.0.0.1");
+            s2c_validate.set_port("9800");
+            s2c_validate.set_ip("127.0.0.1");
         }
         else
         {
             std::cout << "Msgsvr端口分配失败 " << std::endl;
-            return ;
+            s2c_validate.set_result(static_cast<int32_t>(VALIDATE_STATUS::NO_SVR));
         }
     }
     else
     {
-
+        // 验证失败
     }
 
-//    string validate_info;
-//    validate.SerializeToString(&validate_info);
 //
-//    CMsg packet;
-//    packet.set_msg_type(static_cast<int>(L2D::Verification));
-//    packet.set_serialize_string(validate_info);
-//
-//
-//    Conn_t* conn_ = ConnManager::get_instance()->get_conn(validate_result.m_nUserId);
-//    if (conn_ != nullptr)
-//    {
-//        send_msg(conn_->m_socket, packet);
-//    }
-//    else
-//    {
-//        cout << "invalid conn!" << endl;
-//    }
+    CMsg packet;
+    packet.set_msg_type(static_cast<int>(L2D::Verification));
+    packet.serialization_data_protobuf(s2c_validate);
+
+
+    Conn_t* conn_ = ConnManager::get_instance()->get_conn(s2s_validate.m_nUserId);
+    if (conn_ != nullptr)
+    {
+        send_msg(conn_->m_socket, packet);
+    }
+    else
+    {
+        cout << "invalid conn!" << endl;
+    }
 }
 
 

@@ -31,7 +31,8 @@ std::tuple<int, bool> MsgSvrManager::get_best_svr()
 
     if (it == m_svrs.end())
     {
-        // error/ rarely happen
+        // error
+        // no msgsvr
         return std::make_tuple(0, false);
     }
     return std::make_tuple(it->get_port(), true);

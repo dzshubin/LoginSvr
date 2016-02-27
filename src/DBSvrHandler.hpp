@@ -21,7 +21,7 @@ public:
 
 
 private:
-    void handle_verification();
+    void handle_verification(string);
 
 };
 

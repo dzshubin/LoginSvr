@@ -33,18 +33,19 @@ void MsgSvrHandler::process_msg(int type_,string)
 
 void MsgSvrHandler::handle_register()
 {
-    Msg_msgsvr_register register_msg;
-    deserialization(register_msg, m_rBuf);
-
-    std::cout<< "register port: " << register_msg.m_port << std::endl;
-    MsgSvrManager::get_instance()->insert_msgsvr(this, register_msg.m_port);
+//    Msg_msgsvr_register register_msg;
+//    deserialization(register_msg, m_rBuf);
+//
+//    std::cout<< "register port: " << register_msg.m_port << std::endl;
+//    MsgSvrManager::get_instance()->insert_msgsvr(this, register_msg.m_port);
+//
 }
 
 void MsgSvrHandler::handle_UpdateMsgSvr()
 {
-    Msg_update_count update;
-    deserialization(update, m_rBuf);
-
-    std::cout<< "new count: " << update.m_user_count << std::endl;
-    MsgSvrManager::get_instance()->set_user_count(this, update.m_user_count);
+//    Msg_update_count update;
+//    deserialization(update, m_rBuf);
+//
+//    std::cout<< "new count: " << update.m_user_count << std::endl;
+//    MsgSvrManager::get_instance()->set_user_count(this, update.m_user_count);
 }

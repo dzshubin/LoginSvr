@@ -3,6 +3,7 @@
 
 #include "ClientHandler.hpp"
 #include "MsgSvrHandler.h"
+#include "DBSvrHandler.hpp"
 #include "Server.hpp"
 
 
@@ -22,7 +23,7 @@ void Server::initialization ()
 {
     wait_client_accpet();
     wait_msgsvr_accept();
-    //connect_to_DB();
+    connect_to_DB();
 }
 
 
@@ -75,7 +76,7 @@ void Server::wait_msgsvr_accept()
 void Server::connect_to_DB()
 {
     std::string address = "127.0.0.1";
-    std::string port  = "9700";
+    std::string port  = "11000";
 
     ip::tcp::resolver resolver(m_ClientSock.get_io_service());
     ip::tcp::endpoint ep = *resolver.resolve({address, port});
@@ -85,7 +86,8 @@ void Server::connect_to_DB()
             {
                 if (!ec)
                 {
-                    // start for db
+                    std::cout << "connect db!" << std::endl;
+                    std::make_shared<DBSvrHandler>(std::move(m_DBSock))->start();
                 }
                 else
                 {
