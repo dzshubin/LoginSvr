@@ -1,6 +1,6 @@
 
 cmake_minimum_required (VERSION 2.8)
-# Project 
+# Project
 project (LoginSvr)
 
 
@@ -72,8 +72,8 @@ aux_source_directory (. DIR_SRCS)
 aux_source_directory (${Pb_file_path} PB_SRCS)
 
 file(GLOB_RECURSE HEAD_FILES *h *hpp)
-
-ADD_EXECUTABLE(${PROJECT_NAME} ${DIR_SRCS} ${PB_SRCS} ${HEAD_FILES})
+file(GLOB_RECURSE PB_HEAD_FILES ../pb/include/*.h ../pb/include/*.hpp)
+ADD_EXECUTABLE(${PROJECT_NAME} ${DIR_SRCS} ${PB_SRCS} ${HEAD_FILES} ${PB_HEAD_FILES})
 
 
 #
