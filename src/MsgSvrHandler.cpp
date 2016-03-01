@@ -16,36 +16,36 @@ void MsgSvrHandler::start()
     read_head_from_socket();
 }
 
-void MsgSvrHandler::process_msg(int type_,string)
+void MsgSvrHandler::process_msg(int type_,string buf_)
 {
     std::cout << "type: " << type_ << std::endl;
     switch (type_)
     {
     case (int)M2L::Register:
-        handle_register();
+        handle_register(buf_);
         break;
     case (int)M2L::UpdateMsgSvr:
-        handle_UpdateMsgSvr();
+        handle_update_msgsvr(buf_);
         break;
     }
 }
 
 
-void MsgSvrHandler::handle_register()
+void MsgSvrHandler::handle_register(string buf_)
 {
-//    Msg_msgsvr_register register_msg;
-//    deserialization(register_msg, m_rBuf);
-//
-//    std::cout<< "register port: " << register_msg.m_port << std::endl;
-//    MsgSvrManager::get_instance()->insert_msgsvr(this, register_msg.m_port);
-//
+    Msg_msgsvr_register msgsvr;
+    deserialization(msgsvr, buf_);
+
+    std::cout<< "register port: " << msgsvr.m_port << std::endl;
+    MsgSvrManager::get_instance()->insert_msgsvr(this, msgsvr.m_port);
+
 }
 
-void MsgSvrHandler::handle_UpdateMsgSvr()
+void MsgSvrHandler::handle_update_msgsvr(string buf_)
 {
-//    Msg_update_count update;
-//    deserialization(update, m_rBuf);
-//
-//    std::cout<< "new count: " << update.m_user_count << std::endl;
-//    MsgSvrManager::get_instance()->set_user_count(this, update.m_user_count);
+    Msg_update_count update;
+    deserialization(update, buf_);
+
+    std::cout<< "new count: " << update.m_user_count << std::endl;
+    MsgSvrManager::get_instance()->set_user_count(this, update.m_user_count);
 }

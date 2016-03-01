@@ -14,9 +14,9 @@ public:
     virtual void process_msg(int,string) override;
 
 
-
-    void handle_register();
-    void handle_UpdateMsgSvr();
+public:
+    void handle_register(string);
+    void handle_update_msgsvr(string);
 
 };
 
