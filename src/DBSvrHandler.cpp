@@ -85,7 +85,7 @@ void DBSvrHandler::handle_verification (string buf_)
             int nAllocatePort = std::get<0>(svr_info);
             std::cout << "allocate msgsvr port: " <<  nAllocatePort << std::endl;
 
-            s2c_validate.set_port("9800");
+            s2c_validate.set_port(to_string(nAllocatePort));
             s2c_validate.set_ip("127.0.0.1");
         }
         else
