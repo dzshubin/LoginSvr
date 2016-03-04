@@ -86,12 +86,15 @@ void DBSvrHandler::handle_verification (string buf_)
             std::cout << "allocate msgsvr port: " <<  nAllocatePort << std::endl;
 
             s2c_validate.set_port(to_string(nAllocatePort));
-            s2c_validate.set_ip("127.0.0.1");
+            s2c_validate.set_ip("192.168.1.27");
+
         }
         else
         {
             std::cout << "Msgsvr端口分配失败 " << std::endl;
             s2c_validate.set_result(static_cast<int32_t>(VALIDATE_STATUS::NO_SVR));
+            s2c_validate.set_ip("");
+            s2c_validate.set_port("");
         }
     }
     else
