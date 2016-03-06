@@ -100,6 +100,10 @@ shared_ptr<google::protobuf::Message> Handler::CreateMessage(const string& type_
 {
     using namespace google::protobuf;
 
+    try
+    {
+
+
     const Descriptor* dr = DescriptorPool::generated_pool()->FindMessageTypeByName(type_name);
     if (dr == nullptr)
     {
@@ -113,8 +117,15 @@ shared_ptr<google::protobuf::Message> Handler::CreateMessage(const string& type_
         return nullptr;
     }
 
+
     shared_ptr<Message> p_message(proto->New());
     return p_message;
+    }
+    catch (exception e)
+    {
+        cout << "error." << e.what() << endl;
+        return nullptr;
+    }
 }
 
 
