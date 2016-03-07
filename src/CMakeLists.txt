@@ -37,15 +37,15 @@ LINK_DIRECTORIES(${Boost_lib_path})
 
 
 # 设置pb生成的文件路径
-set (Pb_root_path	../pb)
-set (Pb_file_path	${Pb_root_path}/include)
+set (Pb_gen_root_path	../protobuf_gen)
+set (Pb_gen_file_path	${Pb_gen_root_path}/include/)
 
-include_directories(${Pb_file_path})
+include_directories(${Pb_gen_file_path})
 
 
 # 设置protobuf路径
-set (Pb_head_path 	/usr/include/google/protobuf)
-set (Pb_lib_path	/usr/lib)
+set (Pb_head_path 	../protobuf/protobuf)
+set (Pb_lib_path	../protobuf/lib)
 
 include_directories(${Pb_head_path})
 LINK_DIRECTORIES(${Pb_lib_path})
@@ -69,16 +69,17 @@ set (Pb_used_libs ${Pb_lib})
 
 # 当前目前下的所有源文件
 aux_source_directory (. DIR_SRCS)
-aux_source_directory (${Pb_file_path} PB_SRCS)
+aux_source_directory (${Pb_gen_file_path} PB_GEN_SRCS)
 
 file(GLOB_RECURSE HEAD_FILES *h *hpp)
-file(GLOB_RECURSE PB_HEAD_FILES ../pb/include/*.h ../pb/include/*.hpp)
-ADD_EXECUTABLE(${PROJECT_NAME} ${DIR_SRCS} ${PB_SRCS} ${HEAD_FILES} ${PB_HEAD_FILES})
+file(GLOB_RECURSE PB_GEN_HEAD_FILES ../protobuf_gen/include/*.h ../protobuf_gen/include/*.hpp)
+
+
+ADD_EXECUTABLE(${PROJECT_NAME} ${DIR_SRCS} ${PB_GEN_SRCS} ${HEAD_FILES} ${PB_GEN_HEAD_FILES})
 
 
 #
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${Boost_used_libs} ${Pb_used_libs} )
-#TARGET_LINK_LIBRARIES(${PROJECT_NAME} /usr/lib/libprotobuf.a)
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} -lpthread)
 
 
