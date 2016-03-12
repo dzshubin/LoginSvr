@@ -13,6 +13,13 @@ message (STATUS "current dir: ${CMAKE_CURRENT_SOURCE_DIR}")
 
 ADD_DEFINITIONS (-std=c++0x -g -Wall )
 
+
+SET(CMAKE_BULID_TYPE "Debug")
+SET(CMAKE_CXX_FLAGS_DEBUG "$ENV{CXXFLAGS} -O0 -Wall -g -ggdb")
+SET(CMAKE_CXX_FLAGS_RELEASE "$ENV{CXXFLAGS} -O3 -Wall")
+
+
+
 if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU")
     execute_process(COMMAND ${CMAKE_CXX_COMPILER} -dumpversion OUTPUT_VARIABLE GCC_VERSION)
     if (NOT (GCC_VERSION VERSION_GREATER 4.7 OR GCC_VERSION VERSION_EQUAL 4.7))
@@ -52,18 +59,22 @@ LINK_DIRECTORIES(${Pb_lib_path})
 
 
 
-# set used boost
-set (Boost_system_lib 		    libboost_system.a)
-set (Boost_serialization_lib 	libboost_serialization.a)
-set (Boost_signals_lib 		    libboost_signals.a)
+# find Boost
+set(Boost_USE_STATIC_LIBS ON)
 
+find_package(Boost 1.50.0 REQUIRED COMPONENTS system serialization)
+if(Boost_FOUND)
 
-set (Boost_used_libs ${Boost_system_lib} ${Boost_serialization_lib} ${Boost_signals_lib})
+    message(STATUS  "Boost include dirs: " ${Boost_INCLUDE_DIRS})
+    message(STATUS  "Boost lib dirs: " ${Boost_LIBRARY_DIRS})
+    include_directories(${Boost_INCLUDE_DIRS})
+    LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
+endif()
+
 
 
 # set used protobuf
 set (Pb_lib	libprotobuf.a)
-
 set (Pb_used_libs ${Pb_lib})
 
 
@@ -79,7 +90,8 @@ ADD_EXECUTABLE(${PROJECT_NAME} ${DIR_SRCS} ${PB_GEN_SRCS} ${HEAD_FILES} ${PB_GEN
 
 
 #
-TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${Boost_used_libs} ${Pb_used_libs} )
+TARGET_LINK_LIBRARIES(${PROJECT_NAME}  ${Pb_used_libs} )
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${Boost_LIBRARIES})
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} -lpthread)
 
 
