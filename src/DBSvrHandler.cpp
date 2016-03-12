@@ -72,7 +72,9 @@ void DBSvrHandler::handle_verification (string buf_)
 
 
     IM::ValidateResult s2c_validate;
-    int32_t result = static_cast<int32_t>(s2s_validate.m_bResult ? VALIDATE_STATUS::SUCCESS : VALIDATE_STATUS::FAIL);
+    int32_t result = static_cast<int32_t>(s2s_validate.m_bResult ?
+                                          VALIDATE_STATUS::SUCCESS :
+                                          VALIDATE_STATUS::FAIL);
     s2c_validate.set_result(result);
 
 
@@ -89,7 +91,7 @@ void DBSvrHandler::handle_verification (string buf_)
             std::cout << "allocate msgsvr port: " <<  nAllocatePort << std::endl;
 
             s2c_validate.set_port(to_string(nAllocatePort));
-            s2c_validate.set_ip("192.168.1.20");
+            s2c_validate.set_ip("192.168.1.22");
 
         }
         else
@@ -121,7 +123,7 @@ void DBSvrHandler::handle_verification (string buf_)
         cout << "invalid conn!" << endl;
     }
 
-    google::protobuf::ShutdownProtobufLibrary();
+    //google::protobuf::ShutdownProtobufLibrary();
 }
 
 

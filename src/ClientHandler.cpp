@@ -106,7 +106,7 @@ void ClientHandler::handle_UserLogin(string trans_data)
     packet.serialization_data_Asio(login_info);
     send_to_db (packet);
 
-    google::protobuf::ShutdownProtobufLibrary();
+    //google::protobuf::ShutdownProtobufLibrary();
 }
 
 
