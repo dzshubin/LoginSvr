@@ -21,7 +21,7 @@ ClientHandler::ClientHandler(boost::asio::ip::tcp::socket sock_)
 
 void ClientHandler::start()
 {
-    read_head_from_socket();
+    read_head();
 }
 
 

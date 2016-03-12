@@ -11,47 +11,21 @@ message (STATUS "compiler is ${CMAKE_CXX_COMPILER_ID}" )
 message (STATUS "source dir: ${PROJECT_SOURCE_DIR} ")
 message (STATUS "current dir: ${CMAKE_CURRENT_SOURCE_DIR}")
 
-ADD_DEFINITIONS (-std=c++0x -g -Wall )
-
-
-SET(CMAKE_BULID_TYPE "Debug")
-SET(CMAKE_CXX_FLAGS_DEBUG "$ENV{CXXFLAGS} -O0 -Wall -g -ggdb")
-SET(CMAKE_CXX_FLAGS_RELEASE "$ENV{CXXFLAGS} -O3 -Wall")
+if (NOT win32)
+    add_definitions(-std=c++11)
+endif()
 
 
 
-if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU")
-    execute_process(COMMAND ${CMAKE_CXX_COMPILER} -dumpversion OUTPUT_VARIABLE GCC_VERSION)
-    if (NOT (GCC_VERSION VERSION_GREATER 4.7 OR GCC_VERSION VERSION_EQUAL 4.7))
-        message(FATAL_ERROR "${PROJECT_NAME} requires g++ 4.7 or greater.")
-    endif ()
-    elseif ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
-
-    else ()
-        message(FATAL_ERROR "Your C++ compiler does not support C++11.")
-    endif ()
-
-
-# 设置boost库路径
-set (Boost_root_path    ../boost)
-set (Boost_head_path    ${Boost_root_path}/include)
-set (Boost_lib_path	${Boost_root_path}/lib)
-
-
-include_directories(${Boost_head_path})
-LINK_DIRECTORIES(${Boost_lib_path})
-
-
-# 设置pb生成的文件路径
+#  设置protobuf 生成文件的路径
 set (Pb_gen_root_path	../protobuf_gen)
 set (Pb_gen_file_path	${Pb_gen_root_path}/include/)
 
 include_directories(${Pb_gen_file_path})
 
 
-# 设置protobuf路径
-set (Pb_head_path 	../protobuf/protobuf)
+#  设置protobuf文件路径
+set (Pb_head_path 	../protobuf/)
 set (Pb_lib_path	../protobuf/lib)
 
 include_directories(${Pb_head_path})
@@ -72,13 +46,17 @@ if(Boost_FOUND)
 endif()
 
 
+#find protobuf
+find_package(Protobuf REQUIRED)
+if(PROTOBUF_FOUND)
+    message(STATUS "protobuf include dirs: " ${PROTOBUF_INCLUDE_DIRS})
+    message(STATUS "protobuf lib dirs: " ${PROTOBUF_LIBRARY})
 
-# set used protobuf
-set (Pb_lib	libprotobuf.a)
-set (Pb_used_libs ${Pb_lib})
+    include_directories(${PROTOBUF_INCLUDE_DIRS})
+endif()
 
 
-# 当前目前下的所有源文件
+
 aux_source_directory (. DIR_SRCS)
 aux_source_directory (${Pb_gen_file_path} PB_GEN_SRCS)
 
@@ -89,8 +67,7 @@ file(GLOB_RECURSE PB_GEN_HEAD_FILES ../protobuf_gen/include/*.h ../protobuf_gen/
 ADD_EXECUTABLE(${PROJECT_NAME} ${DIR_SRCS} ${PB_GEN_SRCS} ${HEAD_FILES} ${PB_GEN_HEAD_FILES})
 
 
-#
-TARGET_LINK_LIBRARIES(${PROJECT_NAME}  ${Pb_used_libs} )
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${PROTOBUF_LIBRARIES} )
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${Boost_LIBRARIES})
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} -lpthread)
 
