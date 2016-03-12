@@ -28,7 +28,7 @@ Handler::~Handler()
  *
  */
 
-void Handler::read_head_from_socket()
+void Handler::read_head()
 {
 
     cout << "start read head info!" << endl;
@@ -42,7 +42,7 @@ void Handler::read_head_from_socket()
                 cout << data_len <<endl;
 
                 // 开始读数据体
-                read_body_from_socket(data_len);
+                read_body(data_len);
             }
             else
             {
@@ -54,7 +54,7 @@ void Handler::read_head_from_socket()
         });
 }
 
-void Handler::read_body_from_socket(int len_)
+void Handler::read_body(int len_)
 {
     auto self = shared_from_this();
     async_read(m_sock, m_rBuf, transfer_exactly(len_),
@@ -72,12 +72,12 @@ void Handler::read_body_from_socket(int len_)
                 cout << "# ERR: " << ec.message() << endl;
                 m_sock.close();
             }
-            read_head_from_socket();
+            read_head();
         });
 }
 
 
-ip::tcp::socket& Handler::get_socket()
+ip::tcp::socket& Handler::socket()
 {
     return m_sock;
 }
@@ -99,6 +99,7 @@ int32_t Handler::AsInt32 (const char* buf)
 shared_ptr<google::protobuf::Message> Handler::CreateMessage(const string& type_name)
 {
     using namespace google::protobuf;
+
 
     try
     {
@@ -184,7 +185,7 @@ void Handler::decode()
 }
 
 
-void Handler::send_msg(ip::tcp::socket& sock_, CMsg& msg)
+void Handler::send(CMsg& msg, ip::tcp::socket& sock_)
 {
     encode(msg);
 
@@ -207,7 +208,8 @@ void Handler::send_msg(ip::tcp::socket& sock_, CMsg& msg)
         });
 }
 
-void Handler::send_msg(CMsg& msg)
+
+void Handler::send(CMsg& msg)
 {
     encode(msg);
 
@@ -225,10 +227,11 @@ void Handler::send_msg(CMsg& msg)
                 cout << "# ERR: exception in " << __FILE__;
                 cout << "(" << __FUNCTION__ << ") on line " << __LINE__ << endl;
                 cout << "# ERR: " << ec.message() << endl;
+
+                // remove from connmanager
+
                 m_sock.close();
             }
         });
 }
-
-
 

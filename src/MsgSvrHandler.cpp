@@ -13,7 +13,7 @@ MsgSvrHandler::MsgSvrHandler(ip::tcp::socket sock_)
 void MsgSvrHandler::start()
 {
     std::cout << "msgsvrhandler start " << std::endl;
-    read_head_from_socket();
+    read_head();
 }
 
 void MsgSvrHandler::process_msg(int type_,string buf_)

@@ -40,7 +40,7 @@ DBSvrHandler::DBSvrHandler(boost::asio::ip::tcp::socket sock_)
 void DBSvrHandler::start()
 {
     g_db_handler = this;
-    read_head_from_socket();
+    read_head();
 }
 
 
@@ -116,7 +116,7 @@ void DBSvrHandler::handle_verification (string buf_)
     Conn_t* conn_ = ConnManager::get_instance()->get_conn(s2s_validate.m_nUserId);
     if (conn_ != nullptr)
     {
-        send_msg(conn_->m_socket, packet);
+        send(packet, conn_->m_socket);
     }
     else
     {
@@ -132,7 +132,7 @@ void DBSvrHandler::handle_verification (string buf_)
 void send_to_db (CMsg& packet_)
 {
     if (g_db_handler)
-        g_db_handler->send_msg(packet_);
+        g_db_handler->send(packet_);
 }
 
 
