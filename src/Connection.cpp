@@ -1,7 +1,12 @@
 
-#include "Handler.hpp"
+#include "Connection.hpp"
 #include <arpa/inet.h>
 
+
+
+#include <boost/bind.hpp>
+
+static int g_count = 1;
 
 /**********************************************
  *
@@ -9,14 +14,13 @@
  *
  */
 
-Handler::Handler(ip::tcp::socket sock_)
-    :m_sock (std::move(sock_))
+Connection::Connection(io_service& io_service_)
+  :m_sock(io_service_), m_strand(io_service_)
 {
-
 }
 
 
-Handler::~Handler()
+Connection::~Connection()
 {
 
 }
@@ -28,59 +32,103 @@ Handler::~Handler()
  *
  */
 
-void Handler::read_head()
+void Connection::read_head()
 {
 
     cout << "start read head info!" << endl;
     auto self = shared_from_this();
-    async_read(m_sock, boost::asio::buffer(head_info),
-        [this, self] (const err_code& ec, size_t len)
-        {
-            if (!ec)
-            {
-                int32_t data_len = AsInt32(head_info);
-                cout << data_len <<endl;
 
-                // 开始读数据体
-                read_body(data_len);
-            }
-            else
-            {
-                cout << "# ERR: exception in " << __FILE__;
-                cout << "(" << __FUNCTION__ << ") on line " << __LINE__ << endl;
-                cout << "# ERR: " << ec.message() << endl;
-                m_sock.close();
-            }
-        });
+
+    async_read(m_sock, boost::asio::buffer(head_info),
+        m_strand.wrap(
+            boost::bind(&Connection::handle_read_head, shared_from_this(),
+                      boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred)
+        ));
 }
 
-void Handler::read_body(int len_)
+void Connection::read_body(int len_)
 {
     auto self = shared_from_this();
+
     async_read(m_sock, m_rBuf, transfer_exactly(len_),
-        [self, this] (const err_code& ec, size_t len)
-        {
-            if(!ec)
-            {
-                cout << "readed data size: " << len <<endl;
-                decode();
-            }
-            else
-            {
-                cout << "# ERR: exception in " << __FILE__;
-                cout << "(" << __FUNCTION__ << ") on line " << __LINE__ << endl;
-                cout << "# ERR: " << ec.message() << endl;
-                m_sock.close();
-            }
-            read_head();
-        });
+        m_strand.wrap(
+            boost::bind(&Connection::handle_read_body, shared_from_this(),
+                      boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred)
+        ));
 }
 
 
-ip::tcp::socket& Handler::socket()
+
+void Connection::send(CMsg& msg, ip::tcp::socket& sock_)
+{
+    encode(msg);
+
+    cout << "start send msg." << endl;
+    auto self = shared_from_this();
+
+
+    async_write(sock_, boost::asio::buffer(m_strSendData),
+        m_strand.wrap(
+            boost::bind(&Connection::handle_write, shared_from_this(),
+                      boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred)
+        ));
+}
+
+
+void Connection::send(CMsg& msg)
+{
+    encode(msg);
+
+    cout << "start send msg." << endl;
+    auto self = shared_from_this();
+
+    async_write(m_sock, boost::asio::buffer(m_strSendData),
+        m_strand.wrap(
+            boost::bind(&Connection::handle_write, shared_from_this(),
+                      boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred)
+        ));
+}
+
+
+void Connection::send_and_shutdown(CMsg& pkt, ip::tcp::socket& sock_)
+{
+    encode(pkt);
+    auto self = shared_from_this();
+
+    async_write(sock_, boost::asio::buffer(m_strSendData),
+        m_strand.wrap(
+            boost::bind(&Connection::handle_write_done_shutdown, shared_from_this(),
+                      boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred,
+                      ref(sock_))
+        ));
+}
+
+
+ip::tcp::socket& Connection::socket()
 {
     return m_sock;
 }
+
+
+
+void Connection::stop()
+{
+    m_sock.close();
+
+    stop_after();
+}
+
+
+
+
+void Connection::on_connect()
+{
+    // 分配连接标志
+    m_ConnId = (g_count++) % 32000;
+    start();
+}
+
+
 
 /**********************************************
  *
@@ -88,7 +136,7 @@ ip::tcp::socket& Handler::socket()
  *
  */
 
-int32_t Handler::AsInt32 (const char* buf)
+int32_t Connection::AsInt32 (const char* buf)
 {
     int32_t buf_len = 0;
     std::copy(buf, buf + sizeof(int32_t), reinterpret_cast<char*>(&buf_len));
@@ -96,10 +144,9 @@ int32_t Handler::AsInt32 (const char* buf)
 }
 
 
-shared_ptr<google::protobuf::Message> Handler::CreateMessage(const string& type_name)
+shared_ptr<google::protobuf::Message> Connection::CreateMessage(const string& type_name)
 {
     using namespace google::protobuf;
-
 
     try
     {
@@ -123,34 +170,38 @@ shared_ptr<google::protobuf::Message> Handler::CreateMessage(const string& type_
             return nullptr;
         }
 
-
         shared_ptr<Message> p_message(proto->New());
         return p_message;
+
     }
-    catch (exception e)
+    catch (exception ec)
     {
-        cout << "error." << e.what() << endl;
+        cout << "# ERR: exception in " << __FILE__;
+        cout << "(" << __FUNCTION__ << ") on line " << __LINE__ << endl;
+        cout << "# ERR: " << ec.what() << endl;
         return nullptr;
     }
 }
 
 
-void Handler::encode(CMsg& msg)
+
+
+void Connection::encode(CMsg& msg)
 {
     cout << "start encode msg" << endl;
 
-    send_str.clear();
+    m_strSendData.clear();
 
     // 为头部预留空间
-    send_str.resize(sizeof(int32_t));
+    m_strSendData.resize(sizeof(int32_t));
 
     // 消息类型
     int32_t type = msg.get_msg_type();
     int32_t be_type = ::htonl(type);
-    send_str.append(reinterpret_cast<char*>(&be_type), sizeof(be_type));
+    m_strSendData.append(reinterpret_cast<char*>(&be_type), sizeof(be_type));
 
     // 序列化数据
-    send_str.append(msg.get_send_data().c_str(), msg.send_data_len() + 1);
+    m_strSendData.append(msg.get_send_data().c_str(), msg.send_data_len() + 1);
 
 
     // 数据总长度
@@ -158,15 +209,16 @@ void Handler::encode(CMsg& msg)
     int32_t be_len = ::htonl(len);
     std::copy(reinterpret_cast<char*>(&be_len),
               reinterpret_cast<char*>(&be_len) + sizeof(be_len),
-              send_str.begin());
+              m_strSendData.begin());
 
 
-    cout << "send data len: " << msg.send_data_len() + 1 << endl;
-    cout << "send str size: " << send_str.size() << endl;
+    cout << "data len: " << len << endl;
+    cout << "send str size: " << m_strSendData.size() << endl;
 }
 
 
-void Handler::decode()
+
+void Connection::decode()
 {
     ostringstream os;
     os << &m_rBuf;
@@ -176,8 +228,6 @@ void Handler::decode()
 
     // 消息类型
     int32_t type = AsInt32(trans_data.c_str());
-    cout << "type: " << type << endl;
-
 
     // 序列化数据
     std::string buf = trans_data.substr(sizeof(int32_t));
@@ -185,53 +235,101 @@ void Handler::decode()
 }
 
 
-void Handler::send(CMsg& msg, ip::tcp::socket& sock_)
-{
-    encode(msg);
 
-    cout << "start send msg." << endl;
-    auto self = shared_from_this();
-    async_write(sock_, boost::asio::buffer(send_str),
-        [this, self, &sock_] (const err_code& ec, size_t len)
-        {
-            if (!ec)
-            {
-                cout << "send data to client len: " << len << endl;
-            }
-            else
-            {
-                cout << "# ERR: exception in " << __FILE__;
-                cout << "(" << __FUNCTION__ << ") on line " << __LINE__ << endl;
-                cout << "# ERR: " << ec.message() << endl;
-                sock_.close();
-            }
-        });
+
+
+/**********************************************
+ *
+ *  callback
+ */
+
+void Connection::handle_read_head(const err_code& ec, std::size_t byte_trans)
+{
+    if (!ec)
+    {
+
+        int32_t data_len = AsInt32(head_info);
+        cout << data_len <<endl;
+
+        // 开始读数据体
+        read_body(data_len);
+    }
+    else
+    {
+        cout << "# ERR: exception in " << __FILE__;
+        cout << "(" << __FUNCTION__ << ") on line " << __LINE__ << endl;
+        cout << "# ERR: " << ec.message() << endl;
+
+        // 关闭连接
+        stop();
+    }
 }
 
 
-void Handler::send(CMsg& msg)
+
+
+void Connection::handle_read_body(const err_code& ec, std::size_t byte_trans)
 {
-    encode(msg);
 
-    cout << "start send msg." << endl;
-    auto self = shared_from_this();
-    async_write(m_sock, boost::asio::buffer(send_str),
-        [this, self] (const err_code& ec, size_t len)
-        {
-            if (!ec)
-            {
-                cout << "send data to client len: " << len << endl;
-            }
-            else
-            {
-                cout << "# ERR: exception in " << __FILE__;
-                cout << "(" << __FUNCTION__ << ") on line " << __LINE__ << endl;
-                cout << "# ERR: " << ec.message() << endl;
+    if (!ec)
+    {
+        cout << "readed data size: " << byte_trans <<endl;
+        decode();
 
-                // remove from connmanager
+        // 继续读取数据
+        read_head();
+    }
 
-                m_sock.close();
-            }
-        });
+    else
+    {
+        cout << "# ERR: exception in " << __FILE__;
+        cout << "(" << __FUNCTION__ << ") on line " << __LINE__ << endl;
+        cout << "# ERR: " << ec.message() << endl;
+
+        stop();
+
+    }
+}
+
+
+
+void Connection::handle_write(const err_code& ec, std::size_t byte_trans)
+{
+    if (!ec)
+    {
+        cout << "sended data len: " << byte_trans << endl;
+    }
+
+    else
+    {
+        cout << "# ERR: exception in " << __FILE__;
+        cout << "(" << __FUNCTION__ << ") on line " << __LINE__ << endl;
+        cout << "# ERR: " << ec.message() << endl;
+
+        stop();
+    }
+}
+
+
+void Connection::handle_write_done_shutdown(const err_code& ec, std::size_t byte_trans, ip::tcp::socket& sock_)
+{
+
+    if (!ec)
+    {
+        cout << "sended data len: " << byte_trans << endl;
+    }
+
+    else
+    {
+        cout << "# ERR: exception in " << __FILE__;
+        cout << "(" << __FUNCTION__ << ") on line " << __LINE__ << endl;
+        cout << "# ERR: " << ec.message() << endl;
+    }
+
+    if (sock_.is_open())
+    {
+        sock_.close();
+    }
+    stop_after();
 }
 

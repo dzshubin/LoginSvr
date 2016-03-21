@@ -1,51 +1,79 @@
-#include "MsgSvrHandler.h"
+#include "MsgSvrConnection.hpp"
 #include "MsgStruct.hpp"
 #include "ClientMsgTypeDefine.hpp"
 
 
-MsgSvrHandler::MsgSvrHandler(ip::tcp::socket sock_)
-  :Handler(std::move(sock_))
+MsgSvrConnection::MsgSvrConnection(io_service& io_)
+  :Connection(io_)
 {
     //ctor
 }
 
 
-void MsgSvrHandler::start()
+void MsgSvrConnection::start()
 {
-    std::cout << "msgsvrhandler start " << std::endl;
+    std::cout << "MsgSvrConnection start " << std::endl;
     read_head();
 }
 
-void MsgSvrHandler::process_msg(int type_,string buf_)
+
+void MsgSvrConnection::stop_after()
+{
+
+    // 删除这个msg服务器
+    bool result = MsgSvrManager::get_instance()->remove(get_id());
+}
+
+
+void MsgSvrConnection::process_msg(int type_,string buf_)
 {
     std::cout << "type: " << type_ << std::endl;
     switch (type_)
     {
-    case (int)M2L::Register:
+    case (int)M2L::REGISTER:
         handle_register(buf_);
         break;
-    case (int)M2L::UpdateMsgSvr:
+    case (int)M2L::UPDATE_SVR_COUNT:
         handle_update_msgsvr(buf_);
         break;
     }
 }
 
 
-void MsgSvrHandler::handle_register(string buf_)
+void MsgSvrConnection::handle_register(string buf_)
 {
     Msg_msgsvr_register msgsvr;
     deserialization(msgsvr, buf_);
 
     std::cout<< "register port: " << msgsvr.m_port << std::endl;
-    MsgSvrManager::get_instance()->insert_msgsvr(this, msgsvr.m_port);
+    //MsgSvrManager::get_instance()->insert_msgsvr(this, msgsvr.m_port);
 
+    CMsgSvr* pSvr = MsgSvrManager::get_instance()->get_svr(msgsvr.m_port);
+    if (pSvr == nullptr)
+    {
+        pSvr = new CMsgSvr;
+        pSvr->set_port(msgsvr.m_port);
+        pSvr->set_conn(shared_from_this());
+
+        MsgSvrManager::get_instance()->insert(pSvr);
+    }
 }
 
-void MsgSvrHandler::handle_update_msgsvr(string buf_)
+void MsgSvrConnection::handle_update_msgsvr(string buf_)
 {
     Msg_update_count update;
     deserialization(update, buf_);
 
-    std::cout<< "new count: " << update.m_user_count << std::endl;
-    MsgSvrManager::get_instance()->set_user_count(this, update.m_user_count);
+    cout<< "new count: " << update.m_user_count << endl;
+
+    CMsgSvr* pSvr = MsgSvrManager::get_instance()->get_svr(get_id());
+    if (pSvr == nullptr)
+    {
+        // error
+        return ;
+    }
+    else
+    {
+        pSvr->set_user_count(update.m_user_count);
+    }
 }

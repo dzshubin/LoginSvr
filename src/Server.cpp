@@ -1,17 +1,20 @@
 #include <iostream>
 #include <string>
+#include <thread>
 
-#include "ClientHandler.hpp"
-#include "MsgSvrHandler.h"
-#include "DBSvrHandler.hpp"
+#include "ClientConnection.hpp"
+#include "MsgSvrConnection.hpp"
+#include "DbSvrConnection.hpp"
 #include "Server.hpp"
 
+#include <boost/bind.hpp>
+#include <boost/asio/connect.hpp>
 
 
-Server::Server(io_service& io, unsigned short msgsvr_port, unsigned short client_port)
-  :m_ClientSock (io), m_MsgSock (io), m_DBSock (io),
-   m_msgsvrAcc (io, ip::tcp::endpoint(ip::tcp::v4(), msgsvr_port)),
-   m_ClientAcc (io, ip::tcp::endpoint(ip::tcp::v4(), client_port))
+Server::Server(unsigned short msgsvr_port, unsigned short client_port)
+  :m_io_service(),
+   m_msgsvrAcc (m_io_service, ip::tcp::endpoint(ip::tcp::v4(), msgsvr_port)),
+   m_ClientAcc (m_io_service, ip::tcp::endpoint(ip::tcp::v4(), client_port))
 
 {
     initialization();
@@ -21,52 +24,66 @@ Server::Server(io_service& io, unsigned short msgsvr_port, unsigned short client
 
 void Server::initialization ()
 {
-    wait_client_accpet();
+    wait_client_accept();
     wait_msgsvr_accept();
     connect_to_DB();
 }
 
 
-void Server::wait_client_accpet()
+void Server::run()
 {
-    m_ClientAcc.async_accept(m_ClientSock,
-            [this] (const boost::system::error_code& ec)
+    // 线程池大小
+    std::size_t threads_pool_size = 4;
+
+
+    vector<shared_ptr<std::thread>> threads;
+    for(int i = 0; i < threads_pool_size; i++)
+    {
+        shared_ptr<std::thread> thread(new std::thread(
+            boost::bind(&io_service::run, &m_io_service)));
+        threads.push_back(thread);
+    }
+
+
+    // 等待所有线程结束
+    for_each(threads.begin(), threads.end(),
+        [] (shared_ptr<std::thread> ptr)
+        {
+            ptr->join();
+        });
+}
+
+void Server::wait_client_accept()
+{
+
+    m_client_conn.reset(new ClientConnection(m_io_service));
+
+    m_ClientAcc.async_accept(m_client_conn->socket(), [this] (const boost::system::error_code& ec)
+        {
+            if(!ec)
             {
-                if(!ec)
-                {
-                    std::cout << "address: " << m_ClientSock.remote_endpoint().address().to_string()
-                              << "port: "    << m_ClientSock.remote_endpoint().port()    << std::endl;
+                cout << "ADDRESS: " << m_client_conn->socket().remote_endpoint().address().to_string()
+                     << "PORT: "    << m_client_conn->socket().remote_endpoint().port()    << endl;
 
-                    // start for client
-                    std::make_shared<ClientHandler>(std::move(m_ClientSock))->start();
+                m_client_conn->on_connect();
 
-                }
-                else
-                {
-                    std::cerr << "client accept error." << std::endl;
-                }
-
-                wait_client_accpet();
-            });
+            }
+            wait_client_accept();
+        });
 }
 
 void Server::wait_msgsvr_accept()
 {
-    m_msgsvrAcc.async_accept(m_MsgSock,
-        [this] (boost::system::error_code ec)
+    m_msgsvr_conn.reset(new MsgSvrConnection(m_io_service));
+
+    m_msgsvrAcc.async_accept(m_msgsvr_conn->socket(), [this] (const boost::system::error_code& ec)
         {
             if(!ec)
             {
-                std::cout << "address: " << m_MsgSock.remote_endpoint().address().to_string()
-                          << "port: "    << m_MsgSock.remote_endpoint().port()    << std::endl;
+                cout << "address: " << m_msgsvr_conn->socket().remote_endpoint().address().to_string()
+                     << "port: "    << m_msgsvr_conn->socket().remote_endpoint().port()    << endl;
+                m_msgsvr_conn->on_connect();
 
-                // start for msgsvr
-                std::make_shared<MsgSvrHandler>(std::move(m_MsgSock))->start();
-
-            }
-            else
-            {
-                std::cerr << "client accept error." << std::endl;
             }
 
             wait_msgsvr_accept();
@@ -75,27 +92,31 @@ void Server::wait_msgsvr_accept()
 
 void Server::connect_to_DB()
 {
-    std::string address = "127.0.0.1";
-    std::string port  = "11000";
+    string address = "127.0.0.1";
+    string port  = "11000";
 
-    ip::tcp::resolver resolver(m_ClientSock.get_io_service());
-    ip::tcp::endpoint ep = *resolver.resolve({address, port});
+    ip::tcp::resolver resolver(m_io_service);
+    ip::tcp::resolver::iterator it = resolver.resolve({address, port});
 
-    m_DBSock.async_connect(ep,
-            [this] (const boost::system::error_code& ec )
+
+    m_db_conn.reset(new DbSvrConnection(m_io_service));
+
+    async_connect(m_db_conn->socket(), it,
+        [this] (const boost::system::error_code& ec, ip::tcp::resolver::iterator it )
+        {
+            if (!ec)
             {
-                if (!ec)
-                {
-                    std::cout << "connect db!" << std::endl;
-                    std::make_shared<DBSvrHandler>(std::move(m_DBSock))->start();
-                }
-                else
-                {
-                    std::cout << "error. try connect db..." << std::endl;
-                    boost::asio::deadline_timer t(m_ClientSock.get_io_service(), boost::posix_time::seconds(5));
-                    t.wait();
-                    connect_to_DB();
-                }
-            });
+                cout << "connect db!" << endl;
+                m_db_conn->on_connect();
+
+            }
+            else
+            {
+                cout << "error. try connect db..." << endl;
+                boost::asio::deadline_timer t(m_io_service, boost::posix_time::seconds(5));
+                t.wait();
+                connect_to_DB();
+            }
+        });
 }
 

@@ -1,17 +1,17 @@
 
 
 
-#include "DBSvrHandler.hpp"
+#include "DbSvrConnection.hpp"
 #include "MsgStruct.hpp"
 #include "ClientMsgTypeDefine.hpp"
-#include "ConnManager.hpp"
 #include "MsgSvrManager.hpp"
-
+#include "UserManager.hpp"
+#include "LoginUser.hpp"
 #include <string>
 
 #include "validate.pb.h"
 
-DBSvrHandler* g_db_handler = nullptr;
+DbSvrConnection* g_db_handler = nullptr;
 
 
 enum class VALIDATE_STATUS
@@ -28,8 +28,8 @@ enum class VALIDATE_STATUS
  *
  */
 
-DBSvrHandler::DBSvrHandler(boost::asio::ip::tcp::socket sock_)
-  :Handler(std::move(sock_))
+DbSvrConnection::DbSvrConnection(io_service& io_)
+  :Connection(io_)
 {
 
 
@@ -37,18 +37,18 @@ DBSvrHandler::DBSvrHandler(boost::asio::ip::tcp::socket sock_)
 
 
 
-void DBSvrHandler::start()
+void DbSvrConnection::start()
 {
     g_db_handler = this;
     read_head();
 }
 
 
-void DBSvrHandler::process_msg(int type_,string buf_)
+void DbSvrConnection::process_msg(int type_,string buf_)
 {
     switch (type_)
     {
-    case (int)L2D::Verification:
+    case (int)L2D::VERIFICATION:
         handle_verification(buf_);
         break;
 
@@ -62,7 +62,7 @@ void DBSvrHandler::process_msg(int type_,string buf_)
 
 
 
-void DBSvrHandler::handle_verification (string buf_)
+void DbSvrConnection::handle_verification (string buf_)
 {
 
     GOOGLE_PROTOBUF_VERIFY_VERSION;
@@ -107,23 +107,34 @@ void DBSvrHandler::handle_verification (string buf_)
         // 验证失败
     }
 
-//
+
     CMsg packet;
-    packet.set_msg_type(static_cast<int>(L2D::Verification));
+    packet.set_msg_type(static_cast<int>(L2D::VERIFICATION));
     packet.serialization_data_protobuf(s2c_validate);
 
 
-    Conn_t* conn_ = ConnManager::get_instance()->get_conn(s2s_validate.m_nUserId);
-    if (conn_ != nullptr)
+
+    // 获得指定用户的连接
+    // 发送数据包到指定socket
+    // 然后关闭连接
+    LoginUser* pLoginUser = UserManager::get_instance()->get_user(s2s_validate.m_nUserId);
+    if (pLoginUser == nullptr)
     {
-        send(packet, conn_->m_socket);
+        // error
+        return ;
     }
     else
     {
-        cout << "invalid conn!" << endl;
+        send_and_shutdown(packet, pLoginUser->get_conn()->socket());
     }
 
-    //google::protobuf::ShutdownProtobufLibrary();
+
+}
+
+
+void DbSvrConnection::stop_after()
+{
+    bool result = UserManager::get_instance()->free_conn_in_user(get_id());
 }
 
 

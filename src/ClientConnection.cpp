@@ -1,36 +1,37 @@
 
 
-#include "ClientHandler.hpp"
+#include "ClientConnection.hpp"
 #include "ClientMsgTypeDefine.hpp"
 #include "MsgSvrManager.hpp"
 #include "MsgStruct.hpp"
-#include "ConnManager.hpp"
-#include "DBSvrHandler.hpp"
-
+#include "DbSvrConnection.hpp"
+#include "LoginUser.hpp"
+#include "UserManager.hpp"
 
 
 #include "login.pb.h"
 #include "validate.pb.h"
 
-ClientHandler::ClientHandler(boost::asio::ip::tcp::socket sock_)
-  :Handler(std::move(sock_))
+ClientConnection::ClientConnection(io_service& io_)
+  :Connection(io_)
 {
 
 }
 
 
-void ClientHandler::start()
+void ClientConnection::start()
 {
     read_head();
 }
 
 
-void ClientHandler::process_msg(int type_, string buf_)
+
+void ClientConnection::process_msg(int type_, string buf_)
 {
     switch (type_)
     {
-    case (int)C2L::UserLogin:
-        handle_UserLogin(buf_);
+    case (int)C2L::USER_LOGIN:
+        handle_user_login(buf_);
         break;
     default:
         std::cout << "invalid msg type!" << std::endl;
@@ -40,7 +41,7 @@ void ClientHandler::process_msg(int type_, string buf_)
 
 
 
-void ClientHandler::handle_UserLogin(string trans_data)
+void ClientConnection::handle_user_login(string trans_data)
 {
 
     // 账号密码验证
@@ -95,18 +96,29 @@ void ClientHandler::handle_UserLogin(string trans_data)
         cout << "# ERR: " << e.what() << endl;
     }
 
-    ConnManager::get_instance()->insert_conn(id, m_sock);
+
+
+    LoginUser* pLoginUser = UserManager::get_instance()->get_user(id);
+
+    if (pLoginUser == nullptr)
+    {
+        // add
+        pLoginUser = new LoginUser;
+        pLoginUser->set_conn(shared_from_this());
+        pLoginUser->set_id(id);
+
+        UserManager::get_instance()->insert(pLoginUser);
+    }
+
 
     Msg_login login_info;
     login_info.m_nId = id;
     login_info.m_passwd = passwd;
 
     CMsg packet;
-    packet.set_msg_type(static_cast<int>(L2D::Verification));
+    packet.set_msg_type(static_cast<int>(L2D::VERIFICATION));
     packet.serialization_data_Asio(login_info);
     send_to_db (packet);
-
-    //google::protobuf::ShutdownProtobufLibrary();
 }
 
 
@@ -116,19 +128,8 @@ void ClientHandler::handle_UserLogin(string trans_data)
  *
  */
 
-
-void send_to_client(uint64_t id_, CMsg& packet_)
+void ClientConnection::stop_after()
 {
-    Conn_t* conn = ConnManager::get_instance()->get_conn(id_);
-    if (conn != nullptr)
-    {
-
-    }
-
-    else
-    {
-        cout << "not found id!" << endl;
-    }
 
 }
 

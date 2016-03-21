@@ -2,26 +2,30 @@
 #define CMSGSVR_HPP_INCLUDED
 
 
+#include "Connection.hpp"
 
 class CMsgSvr
 {
 public:
-    CMsgSvr (void *context_, int port_);
-
+    CMsgSvr();
 
     int get_port();
+    void set_port(int);
 
     void set_user_count(int);
     int get_user_count();
 
-    void *get_context();
+    connection_ptr get_conn ();
+    void set_conn(connection_ptr);
+
+    void free_conn();
 
     // 自定义比较
     bool operator<(CMsgSvr&);
 
 private:
-    // 上下文
-    void* m_context;
+    //
+    connection_ptr m_conn;
     // 服务器监听端口
     int m_port;
     // 该服务器总人数

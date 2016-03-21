@@ -1,23 +1,24 @@
-#ifndef MSGSVRHANDLER_H
-#define MSGSVRHANDLER_H
+#ifndef MsgSvrConnection_H
+#define MsgSvrConnection_H
 
 
-#include "Handler.hpp"
+#include "Connection.hpp"
 #include "MsgSvrManager.hpp"
 
-class MsgSvrHandler :public Handler
+class MsgSvrConnection: public Connection
 {
 public:
-    MsgSvrHandler(ip::tcp::socket);
+    MsgSvrConnection(io_service& io_);
 
     virtual void start() override;
     virtual void process_msg(int,string) override;
 
 
+    virtual void stop_after() override;
 public:
     void handle_register(string);
     void handle_update_msgsvr(string);
 
 };
 
-#endif // MSGSVRHANDLER_H
+#endif // MsgSvrConnection_H

@@ -1,15 +1,6 @@
 #ifndef CLIENTMSGTYPEDEFINE_HPP_INCLUDED
 #define CLIENTMSGTYPEDEFINE_HPP_INCLUDED
 
-/*********************************************************************************
- *Copyright(C),2010-2011,Your Company
- *FileName: // 文件名
- *Author: shub//作者
- *Version: //版本
- *Date: 2015-1-21//创建日期
- *Description: 消息协议定义//用于主要说明此程序文件完成的主要功能
- *********************************************************************************/
-
 
 //
 //
@@ -27,8 +18,9 @@
 
 enum class M2L
 {
-    Register                        = 7000,
-    UpdateMsgSvr                    = 7001,     // 更新当前消息服务器总人数
+    REGISTER                            = 7000,
+    // 更新当前消息服务器总人数
+    UPDATE_SVR_COUNT                    = 7001,
 };
 
 
@@ -44,7 +36,7 @@ enum class C2L
      * @parm    id  : 用户登陆id
      * @return  port: 分配的消息服务器监听端口
      */
-    UserLogin                       = 1000,
+    USER_LOGIN                       = 1000,
 };
 
 
@@ -56,8 +48,8 @@ enum class L2D
      * @parm    passwd  : 登陆密码
      * @return  result  : 验证结果
      */
-     Verification                   = 3000,
-	
+     VERIFICATION                   = 3000,
+
 };
 
 

@@ -1,24 +1,27 @@
-#ifndef CLIENTHANDLER_HPP_INCLUDED
-#define CLIENTHANDLER_HPP_INCLUDED
+#ifndef ClientConnection_HPP_INCLUDED
+#define ClientConnection_HPP_INCLUDED
 
-#include "Handler.hpp"
+#include "Connection.hpp"
 #include <boost/asio/ip/tcp.hpp>
 
-class ClientHandler :public Handler
+
+class ClientConnection :public Connection
 {
 public:
-    ClientHandler (boost::asio::ip::tcp::socket);
+    ClientConnection (io_service& );
 
 public:
     virtual void start() override;
-    virtual void process_msg(int,string) override;
+    virtual void process_msg(int, string) override;
 
+
+    virtual void stop_after() override;
 
 public:
-    void handle_UserLogin(string);
+    void handle_user_login(string);
 };
 
 
 void send_to_client(uint64_t, CMsg&);
 
-#endif // CLIENTHANDLER_HPP_INCLUDED
+#endif // ClientConnection_HPP_INCLUDED

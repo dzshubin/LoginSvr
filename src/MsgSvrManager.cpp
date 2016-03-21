@@ -10,6 +10,15 @@ MsgSvrManager::MsgSvrManager()
 
 }
 
+MsgSvrManager::~MsgSvrManager()
+{
+
+    for_each(m_svrs.begin(), m_svrs.end(),
+        [] (CMsgSvr* pUser)
+        {
+            delete pUser;
+        });
+}
 
 MsgSvrManager* MsgSvrManager::get_instance()
 {
@@ -17,11 +26,36 @@ MsgSvrManager* MsgSvrManager::get_instance()
     return &manager;
 }
 
-void MsgSvrManager::insert_msgsvr(void* context_, int port_)
+void MsgSvrManager::insert(CMsgSvr* pMsgsvr)
 {
-    std::cout << "insert port: " << port_ << "size: " << m_svrs.size() << std::endl;
-    m_svrs.emplace_back(context_, port_);
-    std::cout << "insert port: " << port_ << "size: " << m_svrs.size() << std::endl;
+    std::cout <<"size: " << m_svrs.size() << std::endl;
+    m_svrs.insert(pMsgsvr);
+
+    std::cout <<"size: " << m_svrs.size() << std::endl;
+}
+
+
+bool MsgSvrManager::remove(int id_)
+{
+
+    auto it = find_if(m_svrs.begin(), m_svrs.end(),
+        [&] (CMsgSvr* svr_)
+        {
+            return svr_->get_conn()->get_id() == id_;
+        } );
+
+    if (it == m_svrs.end())
+    {
+        return false;
+    }
+    else
+    {
+        m_svrs.erase(it);
+        (*it)->free_conn();
+        delete (*it);
+
+        return true;
+    }
 }
 
 
@@ -35,16 +69,20 @@ std::tuple<int, bool> MsgSvrManager::get_best_svr()
         // no msgsvr
         return std::make_tuple(0, false);
     }
-    return std::make_tuple(it->get_port(), true);
+    return std::make_tuple( (*it)->get_port(), true);
 }
 
-bool MsgSvrManager::set_user_count(void* context_, int count_)
+
+CMsgSvr* MsgSvrManager::get_svr(int port_)
 {
-    auto it = std::find_if(m_svrs.begin(), m_svrs.end(),
-                         [=] (CMsgSvr& svr)
-                         {
-                            return svr.get_context() == context_;
-                         });
 
-    return it == m_svrs.end() ? false : (it->set_user_count(count_), true);
+    auto it = find_if(m_svrs.begin(), m_svrs.end(),
+        [&] (CMsgSvr* pSvr)
+        {
+            return pSvr->get_port() == port_;
+        });
+
+    return it == m_svrs.end() ? nullptr : *it;
 }
+
+

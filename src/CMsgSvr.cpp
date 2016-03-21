@@ -3,8 +3,8 @@
 #include "CMsgSvr.hpp"
 
 
-CMsgSvr::CMsgSvr(void* context_, int port_)
-  :m_context(context_), m_port(port_), m_user_count(0)
+CMsgSvr::CMsgSvr()
+  :m_port(0), m_user_count(0)
 {
 
 }
@@ -25,18 +25,33 @@ void CMsgSvr::set_user_count(int count_)
 }
 
 
-
-void* CMsgSvr::get_context()
+void CMsgSvr::set_port(int port_)
 {
-
-    return m_context;
+    m_port = port_;
 }
-
 
 int CMsgSvr::get_port()
 {
     return m_port;
 }
+
+connection_ptr CMsgSvr::get_conn ()
+{
+    return m_conn;
+}
+
+
+void CMsgSvr::set_conn(connection_ptr conn_)
+{
+    m_conn = conn_;
+}
+
+
+void CMsgSvr::free_conn()
+{
+    m_conn.reset();
+}
+
 
 
 bool CMsgSvr::operator<(CMsgSvr& other_)

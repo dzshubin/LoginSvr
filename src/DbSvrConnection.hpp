@@ -1,7 +1,7 @@
-#ifndef DBSVRHANDLER_HPP_INCLUDED
-#define DBSVRHANDLER_HPP_INCLUDED
+#ifndef DbSvrConnection_HPP_INCLUDED
+#define DbSvrConnection_HPP_INCLUDED
 
-#include "Handler.hpp"
+#include "Connection.hpp"
 #include "CMsg.hpp"
 #include <boost/asio/ip/tcp.hpp>
 
@@ -10,15 +10,16 @@ using namespace std;
 
 
 
-class DBSvrHandler :public Handler
+class DbSvrConnection: public Connection
 {
 public:
-    DBSvrHandler(boost::asio::ip::tcp::socket);
+    DbSvrConnection(io_service&);
 
 public:
     virtual void start() override;
     virtual void process_msg(int, string) override;
 
+    virtual void stop_after() override;
 
 private:
     void handle_verification(string);
@@ -28,4 +29,4 @@ private:
 
 void send_to_db (CMsg&);
 
-#endif // DBSVRHANDLER_HPP_INCLUDED
+#endif // DbSvrConnection_HPP_INCLUDED

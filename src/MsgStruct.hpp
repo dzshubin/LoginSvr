@@ -7,7 +7,7 @@
 struct Msg_login
 {
 
-    uint64_t m_nId;
+    int64_t m_nId;
     std::string m_passwd;
 
 
