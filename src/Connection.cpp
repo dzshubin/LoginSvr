@@ -1,7 +1,7 @@
 
 #include "Connection.hpp"
+#include "UserManager.hpp"
 #include <arpa/inet.h>
-
 
 
 #include <boost/bind.hpp>
@@ -90,7 +90,7 @@ void Connection::send(CMsg& msg)
 }
 
 
-void Connection::send_and_shutdown(CMsg& pkt, ip::tcp::socket& sock_)
+void Connection::send_and_shutdown(CMsg& pkt, ip::tcp::socket& sock_, int64_t user_id_)
 {
     encode(pkt);
     auto self = shared_from_this();
@@ -99,7 +99,7 @@ void Connection::send_and_shutdown(CMsg& pkt, ip::tcp::socket& sock_)
         m_strand.wrap(
             boost::bind(&Connection::handle_write_done_shutdown, shared_from_this(),
                       boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred,
-                      ref(sock_))
+                      ref(sock_),user_id_)
         ));
 }
 
@@ -311,7 +311,8 @@ void Connection::handle_write(const err_code& ec, std::size_t byte_trans)
 }
 
 
-void Connection::handle_write_done_shutdown(const err_code& ec, std::size_t byte_trans, ip::tcp::socket& sock_)
+void Connection::handle_write_done_shutdown(const err_code& ec, std::size_t byte_trans,
+    ip::tcp::socket& sock_, int64_t user_id_)
 {
 
     if (!ec)
@@ -330,6 +331,7 @@ void Connection::handle_write_done_shutdown(const err_code& ec, std::size_t byte
     {
         sock_.close();
     }
-    stop_after();
+
+    bool result = UserManager::get_instance()->free_conn_in_user(user_id_);
 }
 

@@ -125,7 +125,7 @@ void DbSvrConnection::handle_verification (string buf_)
     }
     else
     {
-        send_and_shutdown(packet, pLoginUser->get_conn()->socket());
+        send_and_shutdown(packet, pLoginUser->get_conn()->socket(), pLoginUser->get_id());
     }
 
 
@@ -134,7 +134,8 @@ void DbSvrConnection::handle_verification (string buf_)
 
 void DbSvrConnection::stop_after()
 {
-    bool result = UserManager::get_instance()->free_conn_in_user(get_id());
+    int id = get_id();
+    bool result = UserManager::get_instance()->free_conn_in_user(id);
 }
 
 

@@ -44,13 +44,13 @@ void UserManager::insert(LoginUser* pUser)
 
 
 
-bool UserManager::free_conn_in_user(int conn_id_)
+bool UserManager::free_conn_in_user(int user_id_)
 {
 
     auto it = find_if(m_users.begin(), m_users.end(),
         [&] (LoginUser* pUser)
         {
-            return pUser->get_conn()->get_id() == conn_id_;
+            return pUser->get_id() == user_id_;
         });
 
     if (it == m_users.end())

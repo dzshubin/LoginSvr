@@ -59,7 +59,7 @@ public:
     void send(CMsg&, ip::tcp::socket& sock_);
     void send(CMsg&);
 
-    void send_and_shutdown(CMsg&, ip::tcp::socket&);
+    void send_and_shutdown(CMsg&, ip::tcp::socket&, int64_t user_id);
 
 
 public:
@@ -94,7 +94,7 @@ private:
     void handle_read_body(const err_code&, std::size_t);
 
     void handle_write(const err_code&, std::size_t);
-    void handle_write_done_shutdown(const err_code&, std::size_t, ip::tcp::socket&);
+    void handle_write_done_shutdown(const err_code&, std::size_t, ip::tcp::socket&, int64_t);
 
 private:
     // 连接

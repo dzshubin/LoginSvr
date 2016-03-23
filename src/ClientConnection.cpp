@@ -104,8 +104,11 @@ void ClientConnection::handle_user_login(string trans_data)
     {
         // add
         pLoginUser = new LoginUser;
-        pLoginUser->set_conn(shared_from_this());
+        auto self = shared_from_this();
+
+        pLoginUser->set_conn(self);
         pLoginUser->set_id(id);
+        pLoginUser->set_conn_id(self->get_id());
 
         UserManager::get_instance()->insert(pLoginUser);
     }
