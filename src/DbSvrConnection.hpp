@@ -3,26 +3,30 @@
 
 #include "Connection.hpp"
 #include "CMsg.hpp"
-#include <boost/asio/ip/tcp.hpp>
+#include "MessageDispatcher.h"
 
+#include <boost/asio/ip/tcp.hpp>
 
 using namespace std;
 
 
 
-class DbSvrConnection: public Connection
+class DBSvrConn: public Connection
 {
 public:
-    DbSvrConnection(io_service&);
+    DBSvrConn(io_service&);
 
 public:
-    virtual void start() override;
-    virtual void process_msg(int, string) override;
+    virtual void on_connect() override;
+    virtual void on_recv_msg(int, pb_message_ptr) override;
+    virtual void on_disconnect() override;
 
-    virtual void stop_after() override;
 
 private:
-    void handle_verification(string);
+    void handle_verification(pb_message_ptr);
+
+private:
+    MessageDispatcher m_dispatcher;
 
 };
 

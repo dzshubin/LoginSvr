@@ -1,24 +1,29 @@
-#ifndef MsgSvrConnection_H
-#define MsgSvrConnection_H
+#ifndef MSGSVRCONN_HPP_INCLUDED
+#define MSGSVRCONN_HPP_INCLUDED
 
 
 #include "Connection.hpp"
-#include "MsgSvrManager.hpp"
+#include "MessageDispatcher.h"
 
-class MsgSvrConnection: public Connection
+class MsgSvrConn: public Connection
 {
 public:
-    MsgSvrConnection(io_service& io_);
+    MsgSvrConn(io_service& io_);
 
-    virtual void start() override;
-    virtual void process_msg(int,string) override;
+    virtual void on_connect() override;
+    virtual void on_recv_msg(int, pb_message_ptr) override;
+    virtual void on_disconnect() override;
 
 
-    virtual void stop_after() override;
-public:
-    void handle_register(string);
-    void handle_update_msgsvr(string);
+
+private:
+    void handle_register(pb_message_ptr);
+    void handle_update_msgsvr(pb_message_ptr);
+
+
+private:
+    MessageDispatcher m_dispatcher;
 
 };
 
-#endif // MsgSvrConnection_H
+#endif // MSGSVRCONN_HPP_INCLUDED

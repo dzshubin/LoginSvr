@@ -19,8 +19,8 @@ public:
     void insert(CMsgSvr*);
     bool remove(int id_);
 
-    // 通过监听端口获取服务器信息
-    CMsgSvr* get_svr(int port_);
+    // 获取服务器信息
+    CMsgSvr* get_svr(int conn_id_);
     //获取在线人数最少的服务器端口
     std::tuple<int,bool> get_best_svr ();
 

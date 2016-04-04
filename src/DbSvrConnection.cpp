@@ -7,11 +7,18 @@
 #include "MsgSvrManager.hpp"
 #include "UserManager.hpp"
 #include "LoginUser.hpp"
+
+
+
 #include <string>
+#include <google/protobuf/message.h>
+
+
+
 
 #include "validate.pb.h"
 
-DbSvrConnection* g_db_handler = nullptr;
+DBSvrConn* g_db_handler = nullptr;
 
 
 enum class VALIDATE_STATUS
@@ -28,114 +35,120 @@ enum class VALIDATE_STATUS
  *
  */
 
-DbSvrConnection::DbSvrConnection(io_service& io_)
+DBSvrConn::DBSvrConn(io_service& io_)
   :Connection(io_)
 {
-
 
 }
 
 
 
-void DbSvrConnection::start()
+void DBSvrConn::on_connect()
 {
+    m_dispatcher.register_message_callback((int)L2D::VERIFICATION,
+        bind(&DBSvrConn::handle_verification, this, std::placeholders::_1));
+
     g_db_handler = this;
     read_head();
 }
 
 
-void DbSvrConnection::process_msg(int type_,string buf_)
+void DBSvrConn::on_recv_msg(int type_, pb_message_ptr p_msg_)
 {
-    switch (type_)
-    {
-    case (int)L2D::VERIFICATION:
-        handle_verification(buf_);
-        break;
-
-    default:
-        cout << "invalid type!" <<endl;
-        break;
-
-    }
-
+    cout << "msg type: " << type_ << endl;
+    m_dispatcher.on_message(type_, p_msg_);
 }
 
 
 
-void DbSvrConnection::handle_verification (string buf_)
+void DBSvrConn::handle_verification (pb_message_ptr p_msg_)
 {
 
     GOOGLE_PROTOBUF_VERIFY_VERSION;
+    using namespace google::protobuf;
 
-    Msg_validate_result s2s_validate;
-    deserialization(s2s_validate, buf_);
-
-
-    IM::ValidateResult s2c_validate;
-    int32_t result = static_cast<int32_t>(s2s_validate.m_bResult ?
-                                          VALIDATE_STATUS::SUCCESS :
-                                          VALIDATE_STATUS::FAIL);
-    s2c_validate.set_result(result);
+    auto descriptor = p_msg_->GetDescriptor();
+    const Reflection* rf = p_msg_->GetReflection();
+    const FieldDescriptor* f_id = descriptor->FindFieldByName("id");
+    const FieldDescriptor* f_result = descriptor->FindFieldByName("result");
 
 
-    // 如果验证通过
-    if (s2s_validate.m_bResult)
+    try
     {
-        // 获得人数最少的服务器端口
-        auto svr_info = MsgSvrManager::get_instance()->get_best_svr();
+        int64_t id = rf->GetInt64(*p_msg_, f_id);
+        bool bResult = rf->GetBool(*p_msg_, f_result);
+
+        cout << "id: " << id << "validate res: " << bResult << endl;
+
+        IM::ValidateResult validte;
+        int32_t nResult = bResult ? (int)VALIDATE_STATUS::SUCCESS : (int)VALIDATE_STATUS::FAIL;
+        validte.set_result(nResult);
 
 
-        if (std::get<1>(svr_info))
+
+        // 如果验证通过
+        if (bResult)
         {
-            int nAllocatePort = std::get<0>(svr_info);
-            std::cout << "allocate msgsvr port: " <<  nAllocatePort << std::endl;
+            // 获得人数最少的服务器端口
+            auto svr_info = MsgSvrManager::get_instance()->get_best_svr();
 
-            s2c_validate.set_port(to_string(nAllocatePort));
-            s2c_validate.set_ip("192.168.1.22");
 
+            if (std::get<1>(svr_info))
+            {
+                int nAllocatePort = std::get<0>(svr_info);
+                std::cout << "allocate msgsvr port: " <<  nAllocatePort << std::endl;
+
+                validte.set_port(to_string(nAllocatePort));
+                validte.set_ip("192.168.1.22");
+
+            }
+            else
+            {
+                cout << "Msgsvr端口分配失败 " << endl;
+                validte.set_result(static_cast<int32_t>(VALIDATE_STATUS::NO_SVR));
+                validte.set_ip("");
+                validte.set_port("");
+            }
         }
         else
         {
-            std::cout << "Msgsvr端口分配失败 " << std::endl;
-            s2c_validate.set_result(static_cast<int32_t>(VALIDATE_STATUS::NO_SVR));
-            s2c_validate.set_ip("");
-            s2c_validate.set_port("");
+            // 验证失败
         }
+
+
+        CMsg packet;
+        packet.encode((int)L2D::VERIFICATION, validte);
+
+
+        // 获得指定用户的连接
+        // 发送数据包到指定socket
+        // 然后关闭连接
+        LoginUser* pLoginUser = UserManager::get_instance()->get_user(id);
+        if (pLoginUser == nullptr)
+        {
+            // error
+            cout << "error! cant find user! id: " << id << endl;
+            return ;
+        }
+        else
+        {
+            send_and_shutdown(packet, pLoginUser->get_conn()->socket());
+        }
+
     }
-    else
+    catch (exception& e)
     {
-        // 验证失败
+        cout << "# ERR: exception in " << __FILE__;
+        cout << "(" << __FUNCTION__ << ") on line " << __LINE__ << endl;
+        cout << "# ERR: " << e.what() << endl;
     }
-
-
-    CMsg packet;
-    packet.set_msg_type(static_cast<int>(L2D::VERIFICATION));
-    packet.serialization_data_protobuf(s2c_validate);
-
-
-
-    // 获得指定用户的连接
-    // 发送数据包到指定socket
-    // 然后关闭连接
-    LoginUser* pLoginUser = UserManager::get_instance()->get_user(s2s_validate.m_nUserId);
-    if (pLoginUser == nullptr)
-    {
-        // error
-        return ;
-    }
-    else
-    {
-        send_and_shutdown(packet, pLoginUser->get_conn()->socket(), pLoginUser->get_id());
-    }
-
 
 }
 
 
-void DbSvrConnection::stop_after()
+void DBSvrConn::on_disconnect()
 {
-    int id = get_id();
-    bool result = UserManager::get_instance()->free_conn_in_user(id);
+
 }
 
 

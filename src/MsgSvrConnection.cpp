@@ -1,79 +1,124 @@
 #include "MsgSvrConnection.hpp"
 #include "MsgStruct.hpp"
+#include "MsgSvrManager.hpp"
 #include "ClientMsgTypeDefine.hpp"
 
 
-MsgSvrConnection::MsgSvrConnection(io_service& io_)
+
+#include <google/protobuf/message.h>
+
+
+MsgSvrConn::MsgSvrConn(io_service& io_)
   :Connection(io_)
 {
     //ctor
+
 }
 
 
-void MsgSvrConnection::start()
+void MsgSvrConn::on_connect()
 {
-    std::cout << "MsgSvrConnection start " << std::endl;
+
+    m_dispatcher.register_message_callback((int)M2L::REGISTER,
+        bind(&MsgSvrConn::handle_register, this, std::placeholders::_1));
+
+    m_dispatcher.register_message_callback((int)M2L::UPDATE_SVR_COUNT,
+        bind(&MsgSvrConn::handle_update_msgsvr, this, std::placeholders::_1));
+
     read_head();
 }
 
 
-void MsgSvrConnection::stop_after()
+void MsgSvrConn::on_disconnect()
 {
-
     // 删除这个msg服务器
-    bool result = MsgSvrManager::get_instance()->remove(get_id());
+    bool result = MsgSvrManager::get_instance()->remove(get_conn_id());
 }
 
 
-void MsgSvrConnection::process_msg(int type_,string buf_)
+void MsgSvrConn::on_recv_msg(int type_, pb_message_ptr p_msg_)
 {
-    std::cout << "type: " << type_ << std::endl;
-    switch (type_)
-    {
-    case (int)M2L::REGISTER:
-        handle_register(buf_);
-        break;
-    case (int)M2L::UPDATE_SVR_COUNT:
-        handle_update_msgsvr(buf_);
-        break;
-    }
+    std::cout << "msg type: " << type_ << std::endl;
+    m_dispatcher.on_message(type_, p_msg_);
 }
 
 
-void MsgSvrConnection::handle_register(string buf_)
+void MsgSvrConn::handle_register(pb_message_ptr p_msg)
 {
-    Msg_msgsvr_register msgsvr;
-    deserialization(msgsvr, buf_);
+    GOOGLE_PROTOBUF_VERIFY_VERSION;
+    using namespace google::protobuf;
 
-    std::cout<< "register port: " << msgsvr.m_port << std::endl;
-    //MsgSvrManager::get_instance()->insert_msgsvr(this, msgsvr.m_port);
 
-    CMsgSvr* pSvr = MsgSvrManager::get_instance()->get_svr(msgsvr.m_port);
-    if (pSvr == nullptr)
+    auto descriptor = p_msg->GetDescriptor();
+    const Reflection* rf = p_msg->GetReflection();
+    const FieldDescriptor* f_port = descriptor->FindFieldByName("port");
+
+
+    int32_t port = 0;
+
+    try
     {
-        pSvr = new CMsgSvr;
-        pSvr->set_port(msgsvr.m_port);
-        pSvr->set_conn(shared_from_this());
+        port = rf->GetInt32(*p_msg, f_port);
+        cout<< "register port: " << port << endl;
 
-        MsgSvrManager::get_instance()->insert(pSvr);
+
+        CMsgSvr* pSvr = MsgSvrManager::get_instance()->get_svr(port);
+        if (pSvr == nullptr)
+        {
+            pSvr = new CMsgSvr;
+            pSvr->set_port(port);
+            pSvr->set_conn(shared_from_this());
+
+            MsgSvrManager::get_instance()->insert(pSvr);
+        }
+
+    }
+    catch (exception& e)
+    {
+        cout << "# ERR: exception in " << __FILE__;
+        cout << "(" << __FUNCTION__ << ") on line " << __LINE__ << endl;
+        cout << "# ERR: " << e.what() << endl;
     }
 }
 
-void MsgSvrConnection::handle_update_msgsvr(string buf_)
+void MsgSvrConn::handle_update_msgsvr(pb_message_ptr p_msg)
 {
-    Msg_update_count update;
-    deserialization(update, buf_);
 
-    cout<< "new count: " << update.m_user_count << endl;
 
-    CMsgSvr* pSvr = MsgSvrManager::get_instance()->get_svr(get_id());
-    if (pSvr == nullptr)
+    GOOGLE_PROTOBUF_VERIFY_VERSION;
+    using namespace google::protobuf;
+
+
+    auto descriptor = p_msg->GetDescriptor();
+    const Reflection* rf = p_msg->GetReflection();
+    const FieldDescriptor* f_count = descriptor->FindFieldByName("count");
+
+
+    int32_t nCount = 0;
+
+    try
     {
-        // error
-        return ;
+        nCount = rf->GetInt32(*p_msg, f_count);
+        cout<< "update! New count: " << nCount << endl;
+
+
+        CMsgSvr* pSvr = MsgSvrManager::get_instance()->get_svr(get_conn_id());
+        if (pSvr == nullptr)
+        {
+            cout << "Cant find msgsvr! conn_id: " << get_conn_id() << endl;
+            return ;
+        }
+        else
+        {
+            pSvr->set_user_count(nCount);
+        }
+
     }
-    else
+    catch (exception& e)
     {
-        pSvr->set_user_count(update.m_user_count);
+        cout << "# ERR: exception in " << __FILE__;
+        cout << "(" << __FUNCTION__ << ") on line " << __LINE__ << endl;
+        cout << "# ERR: " << e.what() << endl;
     }
+
 }

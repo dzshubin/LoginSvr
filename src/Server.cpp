@@ -11,14 +11,21 @@
 #include <boost/asio/connect.hpp>
 
 
+
+Server* g_app = nullptr;
+int Server::g_count = 1;
+
+
 Server::Server(unsigned short msgsvr_port, unsigned short client_port)
   :m_io_service(),
    m_msgsvrAcc (m_io_service, ip::tcp::endpoint(ip::tcp::v4(), msgsvr_port)),
    m_ClientAcc (m_io_service, ip::tcp::endpoint(ip::tcp::v4(), client_port))
 
 {
-    initialization();
+
 }
+
+
 
 
 
@@ -53,19 +60,29 @@ void Server::run()
         });
 }
 
+int Server::allocate_conn_id()
+{
+    return (g_count++) % 65535;
+}
+
+
+
+
+
 void Server::wait_client_accept()
 {
 
-    m_client_conn.reset(new ClientConnection(m_io_service));
+    m_client_conn.reset(new ClientConn(m_io_service));
 
-    m_ClientAcc.async_accept(m_client_conn->socket(), [this] (const boost::system::error_code& ec)
+    m_ClientAcc.async_accept(m_client_conn->socket(), [this] (const err_code& ec)
         {
             if(!ec)
             {
                 cout << "ADDRESS: " << m_client_conn->socket().remote_endpoint().address().to_string()
                      << "PORT: "    << m_client_conn->socket().remote_endpoint().port()    << endl;
 
-                m_client_conn->on_connect();
+                int conn_id = allocate_conn_id();
+                m_client_conn->connect(conn_id);
 
             }
             wait_client_accept();
@@ -74,15 +91,17 @@ void Server::wait_client_accept()
 
 void Server::wait_msgsvr_accept()
 {
-    m_msgsvr_conn.reset(new MsgSvrConnection(m_io_service));
+    m_msgsvr_conn.reset(new MsgSvrConn(m_io_service));
 
-    m_msgsvrAcc.async_accept(m_msgsvr_conn->socket(), [this] (const boost::system::error_code& ec)
+    m_msgsvrAcc.async_accept(m_msgsvr_conn->socket(), [this] (const err_code& ec)
         {
             if(!ec)
             {
                 cout << "address: " << m_msgsvr_conn->socket().remote_endpoint().address().to_string()
                      << "port: "    << m_msgsvr_conn->socket().remote_endpoint().port()    << endl;
-                m_msgsvr_conn->on_connect();
+
+                int conn_id = allocate_conn_id();
+                m_msgsvr_conn->connect(conn_id);
 
             }
 
@@ -99,15 +118,16 @@ void Server::connect_to_DB()
     ip::tcp::resolver::iterator it = resolver.resolve({address, port});
 
 
-    m_db_conn.reset(new DbSvrConnection(m_io_service));
+    m_db_conn.reset(new DBSvrConn(m_io_service));
 
     async_connect(m_db_conn->socket(), it,
-        [this] (const boost::system::error_code& ec, ip::tcp::resolver::iterator it )
+        [this] (const err_code& ec, ip::tcp::resolver::iterator it )
         {
             if (!ec)
             {
                 cout << "connect db!" << endl;
-                m_db_conn->on_connect();
+                int conn_id = allocate_conn_id();
+                m_db_conn->connect(conn_id);
 
             }
             else

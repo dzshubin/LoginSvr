@@ -4,14 +4,13 @@
 #include <string>
 
 
-struct Msg_login
+struct MSG_LOGIN
 {
 
     int64_t m_nId;
     std::string m_passwd;
 
-
-    Msg_login (): m_nId(0)
+    MSG_LOGIN (): m_nId(0)
     {
 
     }
@@ -24,9 +23,9 @@ struct Msg_login
     }
 };
 
-struct Msg_msgsvr_register
+struct MSG_REGISTER_SVR
 {
-    Msg_msgsvr_register () :m_port (0)
+    MSG_REGISTER_SVR () :m_port (0)
     {
 
     }
@@ -41,9 +40,9 @@ struct Msg_msgsvr_register
 };
 
 
-struct Msg_msgsvr_allocate
+struct MSG_ALLOCATE_PORT
 {
-    Msg_msgsvr_allocate () :m_port (0)
+    MSG_ALLOCATE_PORT () :m_port (0)
     {
 
     }
@@ -58,9 +57,9 @@ struct Msg_msgsvr_allocate
 };
 
 
-struct Msg_update_count
+struct MSG_UPDATE
 {
-    Msg_update_count() :m_user_count(0)
+    MSG_UPDATE() :m_user_count(0)
     {
 
     }
@@ -74,9 +73,9 @@ struct Msg_update_count
     int m_user_count;
 };
 
-struct Msg_validate_result
+struct MSG_VALIDATE_RESULT
 {
-    Msg_validate_result (): m_bResult(false), m_nUserId(0)
+    MSG_VALIDATE_RESULT (): m_bResult(false), m_nUserId(0)
     {
     }
 

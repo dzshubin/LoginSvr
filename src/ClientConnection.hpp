@@ -1,27 +1,28 @@
-#ifndef ClientConnection_HPP_INCLUDED
-#define ClientConnection_HPP_INCLUDED
+#ifndef CLIENTCONN_HPP_INCLUDED
+#define CLIENTCONN_HPP_INCLUDED
 
 #include "Connection.hpp"
+#include "MessageDispatcher.h"
 #include <boost/asio/ip/tcp.hpp>
 
 
-class ClientConnection :public Connection
+class ClientConn :public Connection
 {
 public:
-    ClientConnection (io_service& );
+    ClientConn (io_service& );
 
 public:
-    virtual void start() override;
-    virtual void process_msg(int, string) override;
-
-
-    virtual void stop_after() override;
+    virtual void on_connect() override;
+    virtual void on_recv_msg(int, pb_message_ptr) override;
+    virtual void on_disconnect() override;
 
 public:
-    void handle_user_login(string);
+    void handle_user_login(pb_message_ptr);
+
+
+private:
+    MessageDispatcher m_dispatcher;
 };
 
 
-void send_to_client(uint64_t, CMsg&);
-
-#endif // ClientConnection_HPP_INCLUDED
+#endif // CLIENTCONN_HPP_INCLUDED

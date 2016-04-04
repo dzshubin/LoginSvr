@@ -8,7 +8,6 @@
 
 #include "Connection.hpp"
 
-
 using namespace std;
 using namespace boost::asio;
 
@@ -29,10 +28,10 @@ public:
 
     void run();
 
+    int allocate_conn_id();
 
 private:
     io_service m_io_service;
-
 
     connection_ptr m_msgsvr_conn;
     connection_ptr m_db_conn;
@@ -40,8 +39,15 @@ private:
 
     ip::tcp::acceptor m_msgsvrAcc;
     ip::tcp::acceptor m_ClientAcc;
+
+private:
+    static int g_count;
+
 };
 
+
+
+extern Server* g_app;
 
 
 #endif // SERVER_HPP_INCLUDED

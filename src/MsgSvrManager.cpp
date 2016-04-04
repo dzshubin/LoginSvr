@@ -41,7 +41,7 @@ bool MsgSvrManager::remove(int id_)
     auto it = find_if(m_svrs.begin(), m_svrs.end(),
         [&] (CMsgSvr* svr_)
         {
-            return svr_->get_conn()->get_id() == id_;
+            return svr_->get_conn()->get_conn_id() == id_;
         } );
 
     if (it == m_svrs.end())
@@ -73,13 +73,13 @@ std::tuple<int, bool> MsgSvrManager::get_best_svr()
 }
 
 
-CMsgSvr* MsgSvrManager::get_svr(int port_)
+CMsgSvr* MsgSvrManager::get_svr(int conn_id_)
 {
 
     auto it = find_if(m_svrs.begin(), m_svrs.end(),
         [&] (CMsgSvr* pSvr)
         {
-            return pSvr->get_port() == port_;
+            return pSvr->get_conn()->get_conn_id() == conn_id_;
         });
 
     return it == m_svrs.end() ? nullptr : *it;

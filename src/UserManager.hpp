@@ -16,7 +16,10 @@ public:
     LoginUser*  get_user(int64_t);
     void insert(LoginUser*);
 
-    bool free_conn_in_user(int conn_id);
+    bool free_conn(int user_id);
+
+    bool delete_related_user(int conn_id_);
+
 private:
     set<LoginUser*> m_users;
 };
