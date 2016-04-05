@@ -37,7 +37,7 @@ void ClientConn::on_connect()
 
 void ClientConn::on_recv_msg(int type_, pb_message_ptr p_message_)
 {
-    cout << "msg type: " << type_ << endl;
+    cout << "Recv msg type: " << type_ << endl;
     m_dispatcher.on_message(type_, p_message_);
 }
 
@@ -61,25 +61,26 @@ void ClientConn::on_disconnect()
 
 void ClientConn::handle_user_login(pb_message_ptr p_msg)
 {
-
-    using namespace google::protobuf;
-
-
-    auto descriptor = p_msg->GetDescriptor();
-    const Reflection* rf = p_msg->GetReflection();
-    const FieldDescriptor* f_id = descriptor->FindFieldByName("id");
-    const FieldDescriptor* f_passwd = descriptor->FindFieldByName("passwd");
-
-
-    int64_t id;
-    string passwd;
-
     try
     {
-        id = rf->GetInt64(*p_msg, f_id);
+        GOOGLE_PROTOBUF_VERIFY_VERSION;
+        using namespace google::protobuf;
+
+
+        auto descriptor = p_msg->GetDescriptor();
+        const Reflection* rf = p_msg->GetReflection();
+        const FieldDescriptor* f_id = descriptor->FindFieldByName("id");
+        const FieldDescriptor* f_passwd = descriptor->FindFieldByName("passwd");
+
+
+        assert(f_id && f_id->type()==FieldDescriptor::TYPE_INT64);
+        assert(f_passwd && f_passwd->type()==FieldDescriptor::TYPE_STRING);
+
+
+        int64_t id = rf->GetInt64(*p_msg, f_id);
         cout << "id: " << id  << endl;
 
-        passwd = rf->GetString(*p_msg, f_passwd);
+        string passwd = rf->GetString(*p_msg, f_passwd);
         cout << "passwd: " << passwd << endl;
 
 
@@ -98,7 +99,7 @@ void ClientConn::handle_user_login(pb_message_ptr p_msg)
             UserManager::get_instance()->insert(pLoginUser);
         }
 
-        IM::LoginAccount account;
+        IM::Account account;
         account.set_id(id);
         account.set_passwd(passwd);
 

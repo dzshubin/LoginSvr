@@ -33,32 +33,34 @@ void MsgSvrConn::on_disconnect()
 {
     // 删除这个msg服务器
     bool result = MsgSvrManager::get_instance()->remove(get_conn_id());
+
 }
 
 
 void MsgSvrConn::on_recv_msg(int type_, pb_message_ptr p_msg_)
 {
-    std::cout << "msg type: " << type_ << std::endl;
+    std::cout << "Recv msg type: " << type_ << std::endl;
     m_dispatcher.on_message(type_, p_msg_);
 }
 
 
 void MsgSvrConn::handle_register(pb_message_ptr p_msg)
 {
-    GOOGLE_PROTOBUF_VERIFY_VERSION;
-    using namespace google::protobuf;
-
-
-    auto descriptor = p_msg->GetDescriptor();
-    const Reflection* rf = p_msg->GetReflection();
-    const FieldDescriptor* f_port = descriptor->FindFieldByName("port");
-
-
-    int32_t port = 0;
-
     try
     {
-        port = rf->GetInt32(*p_msg, f_port);
+        GOOGLE_PROTOBUF_VERIFY_VERSION;
+        using namespace google::protobuf;
+
+
+        auto descriptor = p_msg->GetDescriptor();
+        const Reflection* rf = p_msg->GetReflection();
+        const FieldDescriptor* f_port = descriptor->FindFieldByName("port");
+
+
+        assert(f_port && f_port->type()==FieldDescriptor::TYPE_INT32);
+
+
+        int32_t port = rf->GetInt32(*p_msg, f_port);
         cout<< "register port: " << port << endl;
 
 
@@ -83,22 +85,23 @@ void MsgSvrConn::handle_register(pb_message_ptr p_msg)
 
 void MsgSvrConn::handle_update_msgsvr(pb_message_ptr p_msg)
 {
-
-
-    GOOGLE_PROTOBUF_VERIFY_VERSION;
-    using namespace google::protobuf;
-
-
-    auto descriptor = p_msg->GetDescriptor();
-    const Reflection* rf = p_msg->GetReflection();
-    const FieldDescriptor* f_count = descriptor->FindFieldByName("count");
-
-
-    int32_t nCount = 0;
-
     try
     {
-        nCount = rf->GetInt32(*p_msg, f_count);
+
+        GOOGLE_PROTOBUF_VERIFY_VERSION;
+        using namespace google::protobuf;
+
+
+        auto descriptor = p_msg->GetDescriptor();
+        const Reflection* rf = p_msg->GetReflection();
+        const FieldDescriptor* f_count = descriptor->FindFieldByName("count");
+
+
+        assert(f_count && f_count->type()==FieldDescriptor::TYPE_INT32);
+
+
+
+        int32_t nCount = rf->GetInt32(*p_msg, f_count);
         cout<< "update! New count: " << nCount << endl;
 
 

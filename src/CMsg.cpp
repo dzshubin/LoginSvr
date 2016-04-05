@@ -58,7 +58,6 @@ bool CMsg::encode(int type_, const google::protobuf::Message& message_)
 
     // 序列化数据
     bool succ_flag = message_.AppendToString(&m_send_data);
-    cout << "message len: " << m_send_data.size() -sizeof(int32_t) * 2 - name_len << endl;
 
     if (succ_flag)
     {
@@ -74,7 +73,7 @@ bool CMsg::encode(int type_, const google::protobuf::Message& message_)
     else
     {
         m_send_data.clear();
-        std::cout << "序列化数据失败!" << std::endl;
+        std::cout << "encode packet fail!" << std::endl;
         return false;
     }
 }

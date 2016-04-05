@@ -55,7 +55,7 @@ void DBSvrConn::on_connect()
 
 void DBSvrConn::on_recv_msg(int type_, pb_message_ptr p_msg_)
 {
-    cout << "msg type: " << type_ << endl;
+    cout << "Recv msg type: " << type_ << endl;
     m_dispatcher.on_message(type_, p_msg_);
 }
 
@@ -63,18 +63,22 @@ void DBSvrConn::on_recv_msg(int type_, pb_message_ptr p_msg_)
 
 void DBSvrConn::handle_verification (pb_message_ptr p_msg_)
 {
-
-    GOOGLE_PROTOBUF_VERIFY_VERSION;
-    using namespace google::protobuf;
-
-    auto descriptor = p_msg_->GetDescriptor();
-    const Reflection* rf = p_msg_->GetReflection();
-    const FieldDescriptor* f_id = descriptor->FindFieldByName("id");
-    const FieldDescriptor* f_result = descriptor->FindFieldByName("result");
-
-
     try
     {
+        GOOGLE_PROTOBUF_VERIFY_VERSION;
+        using namespace google::protobuf;
+
+        auto descriptor = p_msg_->GetDescriptor();
+        const Reflection* rf = p_msg_->GetReflection();
+        const FieldDescriptor* f_id = descriptor->FindFieldByName("id");
+        const FieldDescriptor* f_result = descriptor->FindFieldByName("result");
+
+
+
+        assert(f_id && f_id->type()==FieldDescriptor::TYPE_INT64);
+        assert(f_result && f_result->type()==FieldDescriptor::TYPE_BOOL);
+
+
         int64_t id = rf->GetInt64(*p_msg_, f_id);
         bool bResult = rf->GetBool(*p_msg_, f_result);
 
