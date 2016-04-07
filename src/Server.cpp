@@ -2,9 +2,9 @@
 #include <string>
 #include <thread>
 
-#include "ClientConnection.hpp"
-#include "MsgSvrConnection.hpp"
-#include "DbSvrConnection.hpp"
+#include "ClientConn.hpp"
+#include "MsgSvrConn.hpp"
+#include "DbSvrConn.hpp"
 #include "Server.hpp"
 
 #include <boost/bind.hpp>

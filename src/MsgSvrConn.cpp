@@ -1,4 +1,4 @@
-#include "MsgSvrConnection.hpp"
+#include "MsgSvrConn.hpp"
 #include "MsgStruct.hpp"
 #include "MsgSvrManager.hpp"
 #include "ClientMsgTypeDefine.hpp"

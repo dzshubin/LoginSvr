@@ -2,11 +2,11 @@
 #include <functional>
 
 
-#include "ClientConnection.hpp"
+#include "ClientConn.hpp"
 #include "ClientMsgTypeDefine.hpp"
 #include "MsgSvrManager.hpp"
 #include "MsgStruct.hpp"
-#include "DbSvrConnection.hpp"
+#include "DbSvrConn.hpp"
 #include "LoginUser.hpp"
 #include "UserManager.hpp"
 
