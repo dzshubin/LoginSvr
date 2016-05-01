@@ -4,6 +4,8 @@
 
 #include "Connection.hpp"
 
+#include <string>
+
 class LoginUser
 {
 public:
@@ -21,10 +23,14 @@ public:
     inline int get_conn_id() { return m_conn_id; }
     void set_conn_id(int conn_id_) { m_conn_id = conn_id_; }
 
+    inline string passwd() { return m_passwd; }
+    inline void set_passwd(string passwd_) { m_passwd = move(passwd_); }
+
 private:
     connection_ptr m_conn;
     int64_t m_id;
     int m_conn_id;
+    string m_passwd;
 };
 
 #endif // LOGINUSER_H

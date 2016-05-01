@@ -9,7 +9,7 @@
 #include "DbSvrConn.hpp"
 #include "LoginUser.hpp"
 #include "UserManager.hpp"
-
+#include "MsgSvrConn.hpp"
 
 #include "login.pb.h"
 #include "validate.pb.h"
@@ -83,7 +83,6 @@ void ClientConn::handle_user_login(pb_message_ptr p_msg)
         string passwd = rf->GetString(*p_msg, f_passwd);
         cout << "passwd: " << passwd << endl;
 
-
         LoginUser* pLoginUser = UserManager::get_instance()->get_user(id);
 
         if (pLoginUser == nullptr)
@@ -95,17 +94,18 @@ void ClientConn::handle_user_login(pb_message_ptr p_msg)
             pLoginUser->set_conn(self);
             pLoginUser->set_id(id);
             pLoginUser->set_conn_id(self->get_conn_id());
+            pLoginUser->set_passwd(passwd);
 
             UserManager::get_instance()->insert(pLoginUser);
         }
 
-        IM::Account account;
-        account.set_id(id);
-        account.set_passwd(passwd);
 
+
+
+        /// 玩家是否已经登陆
         CMsg packet;
-        packet.encode((int)L2D::VERIFICATION, account);
-        send_to_db (packet);
+        packet.encode((int)M2L::LOOKUP, *p_msg);
+        send_to_msgsvr(packet);
 
 
     }

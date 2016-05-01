@@ -21,6 +21,8 @@ enum class M2L
     REGISTER                            = 7000,
     // 更新当前消息服务器总人数
     UPDATE_SVR_COUNT                    = 7001,
+    // 查询某个玩家是否已经登陆
+    LOOKUP                              = 7002,
 };
 
 

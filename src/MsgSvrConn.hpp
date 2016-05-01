@@ -19,11 +19,16 @@ public:
 private:
     void handle_register(pb_message_ptr);
     void handle_update_msgsvr(pb_message_ptr);
+    // 查询玩家是否已经在线
+    void handle_lookup(pb_message_ptr);
 
 
 private:
     MessageDispatcher m_dispatcher;
 
 };
+
+
+void send_to_msgsvr(CMsg&);
 
 #endif // MSGSVRCONN_HPP_INCLUDED

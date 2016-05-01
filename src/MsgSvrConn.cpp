@@ -2,11 +2,17 @@
 #include "MsgStruct.hpp"
 #include "MsgSvrManager.hpp"
 #include "ClientMsgTypeDefine.hpp"
-
+#include "LoginUser.hpp"
+#include "UserManager.hpp"
+#include "DbSvrConn.hpp"
 
 
 #include <google/protobuf/message.h>
 
+#include "login.pb.h"
+#include "validate.pb.h"
+
+MsgSvrConn* g_msgsvr_handler = nullptr;
 
 MsgSvrConn::MsgSvrConn(io_service& io_)
   :Connection(io_)
@@ -25,6 +31,12 @@ void MsgSvrConn::on_connect()
     m_dispatcher.register_message_callback((int)M2L::UPDATE_SVR_COUNT,
         bind(&MsgSvrConn::handle_update_msgsvr, this, std::placeholders::_1));
 
+    m_dispatcher.register_message_callback((int)M2L::LOOKUP,
+        bind(&MsgSvrConn::handle_lookup, this, std::placeholders::_1));
+
+
+
+    g_msgsvr_handler = this;
     read_head();
 }
 
@@ -125,3 +137,95 @@ void MsgSvrConn::handle_update_msgsvr(pb_message_ptr p_msg)
     }
 
 }
+
+
+void MsgSvrConn::handle_lookup(pb_message_ptr p_msg_)
+{
+
+    TRY
+
+        auto descriptor = p_msg_->GetDescriptor();
+        const Reflection* rf = p_msg_->GetReflection();
+        const FieldDescriptor* f_id = descriptor->FindFieldByName("id");
+        const FieldDescriptor* f_logined = descriptor->FindFieldByName("is_logined");
+
+
+        assert(f_id && f_id->type()==FieldDescriptor::TYPE_INT64);
+        assert(f_logined && f_logined->type()==FieldDescriptor::TYPE_INT32);
+
+
+        int64_t id = rf->GetInt64(*p_msg_, f_id);
+        int32_t is_logined = rf->GetInt32(*p_msg_, f_logined);
+
+
+
+
+        LoginUser* pLoginUser = UserManager::get_instance()->get_user(id);
+        if (pLoginUser == nullptr)
+        {
+            // error
+            cout << "error! cant find user! id: " << id << endl;
+            return ;
+        }
+
+        /// 已经登陆
+        if (is_logined == 1)
+        {
+            cout << "user id: " << id << "is logined!" <<  endl;
+
+            IM::ValidateResult result;
+            result.set_result(3);
+
+            CMsg packet;
+            packet.encode((int)L2D::VERIFICATION, result);
+
+
+        // 获得指定用户的连接
+        // 发送数据包到指定socket
+        // 然后关闭连接
+            send_and_shutdown(packet, pLoginUser->get_conn()->socket());
+
+        }
+        else
+        {
+            IM::Account account;
+            account.set_id(id);
+            account.set_passwd(pLoginUser->passwd());
+
+            CMsg packet;
+            packet.encode((int)L2D::VERIFICATION, account);
+            send_to_db (packet);
+        }
+
+
+
+    CATCH
+
+}
+
+
+
+
+
+
+
+void send_to_msgsvr(CMsg& packet)
+{
+    if (g_msgsvr_handler)
+    {
+        g_msgsvr_handler->send(packet);
+    }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
